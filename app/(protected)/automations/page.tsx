@@ -174,7 +174,7 @@ const data: RulesType[] = [
   },
 ];
 
-export const columns: ColumnDef<RulesType>[] = [
+const columns: ColumnDef<RulesType>[] = [
   {
     id: "select",
     header: ({ table }) => (
