@@ -1,5 +1,7 @@
 # Boilerplate: Next, Auth, MUI
 
+Neon (posgress): https://neon.tech/
+
 Key Features:
 
 - 🔐 Next-auth v5 (Auth.js)

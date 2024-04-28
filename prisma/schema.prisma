@@ -5,12 +5,13 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 enum UserRole {
-  ADMIN
   USER
+  ADMIN
 }
 
 model User {
@@ -24,6 +25,9 @@ model User {
   accounts              Account[]
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
+  catalogs              Catalog[]
+  intregrations         Intregration[]
+  runs                  Run[]
 }
 
 model Account {
@@ -79,4 +83,66 @@ model TwoFactorConfirmation {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
+}
+
+model IntregrationType {
+  id            String         @id @default(cuid())
+  name          String
+  logo          String         @default("")
+  enable        Boolean        @default(false)
+  intregrations Intregration[]
+  rules         Rule[]
+}
+
+model Intregration {
+  id                 String           @id @default(cuid())
+  userId             String
+  intregrationTypeId String
+  clientId           String
+  apiKey             String
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  intregrationType   IntregrationType @relation(fields: [intregrationTypeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, intregrationTypeId])
+}
+
+model Rule {
+  id                 String           @id @default(cuid())
+  name               String
+  catalogs           Catalog[]
+  intregrationTypeId String
+  intregrationType   IntregrationType @relation(fields: [intregrationTypeId], references: [id], onDelete: Cascade)
+  runs               Run[]
+
+  @@unique([name, intregrationTypeId])
+}
+
+model Catalog {
+  id     String  @id @default(cuid())
+  tags   String?
+  active Boolean
+  userId String
+  ruleId String
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rule   Rule    @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, ruleId])
+}
+
+enum RunStatus {
+  NORUN
+  Ok
+  ERROR
+}
+
+model Run {
+  id     String   @id @default(cuid())
+  date   DateTime
+  userId String
+  ruleId String
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rule   Rule     @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+
+  status RunStatus @default(NORUN)
+  errors String
 }
