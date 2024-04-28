@@ -127,7 +127,7 @@ type ConfigDialogProps = {
 };
 
 export function ConfigDialog({ isOpen }: ConfigDialogProps) {
-  const [modalOpen, setModalOpen] = useState();
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   //   const [modalOpen, setModalOpen, toggle] = useModal(true);
 

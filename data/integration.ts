@@ -14,7 +14,7 @@ export const getInegration = async () => {
   //   // where: { userId: "clv4iruu90000dzavjsvcn4lb" },
   // });
 
-  let intregration = [];
+  let intregration: Array<any> = [];
   if (session) {
     intregration = await db.intregrationType.findMany({
       include: {

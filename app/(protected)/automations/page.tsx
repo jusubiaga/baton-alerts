@@ -56,7 +56,7 @@ import {
 import { Calculator, Calendar, CreditCard, Settings, Smile, User } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-export function Automations() {
+function Automations() {
   return (
     <div>
       <header className="flex justify-between m-3">
