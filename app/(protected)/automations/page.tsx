@@ -56,7 +56,7 @@ import {
 import { Calculator, Calendar, CreditCard, Settings, Smile, User } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-function Automations() {
+export function Automations() {
   return (
     <div>
       <header className="flex justify-between m-3">
@@ -315,7 +315,7 @@ const columns: ColumnDef<RulesType>[] = [
   },
 ];
 
-export function AutomationsTable() {
+function AutomationsTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -431,7 +431,7 @@ export function AutomationsTable() {
   );
 }
 
-export function CreateRule() {
+function CreateRule() {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -481,7 +481,7 @@ const frameworks = [
   },
 ];
 
-export function RuleList() {
+function RuleList() {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
 
