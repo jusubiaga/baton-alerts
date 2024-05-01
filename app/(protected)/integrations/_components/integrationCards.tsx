@@ -19,6 +19,11 @@ import { Switch } from "@/components/ui/switch";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { z } from "zod";
+import IntegrationForm from "./integrationForm";
+import { createInegration } from "@/data/integration";
+
+import { useSession } from "next-auth/react";
 
 export const useModal = (initialMode = false) => {
   const [modalOpen, setModalOpen] = useState(initialMode);
@@ -36,16 +41,33 @@ type IntregationCardProps = {
 export function IntregationCards({ data }: IntregationCardProps) {
   //   const [modalOpen, setModalOpen, toggle] = useModal();
   const [isOpen, setIsOpen] = useState(false);
+  const [item, setItem] = useState<IntregationData | null>(null);
+  const session = useSession();
 
-  //   const handleCreate = () => {
-  //     console.log("IntregationCards");
-  //     // setIsOpen(true);
-  //     setModalOpen(true);
-  //   };
+  const handleSave = (e) => {
+    console.log("IntregationCards");
+    console.log("Event: ", e);
+    // setIsOpen(true);
+    setIsOpen(false);
+    console.log("DATA: ", item);
+    console.log("INT ", item.intregrations);
+    // setItem({ ...item, clientId: e.clientId, apiKey: e.apiKey });
+    const createInegrationData = {
+      userId: session?.data?.userId,
+      intregrationTypeId: item?.id,
+      clientId: e.clientId,
+      apiKey: e.apiKey,
+    };
+  };
+
+  const handleClick = (data: IntregationData) => {
+    setIsOpen(true);
+    setItem(data);
+  };
 
   return (
     <>
-      <Card className="w-[90%] " onClick={() => setIsOpen(true)}>
+      <Card className="w-[90%] ">
         <CardHeader>
           <CardTitle>Add Plataform</CardTitle>
           {/* <CardDescription>You have 3 unread messages.</CardDescription> */}
@@ -55,6 +77,7 @@ export function IntregationCards({ data }: IntregationCardProps) {
             <div
               key={data.id}
               className="flex items-center space-x-4 rounded-md border p-4 hover:bg-gray-100 hover:cursor-pointer"
+              onClick={() => handleClick(data)}
             >
               <span className="flex h-3 w-3 translate-y-1 rounded-full bg-gray-400" />
               <Image src={`/${data.logo}`} alt="" width="64" height="64" />
@@ -93,7 +116,7 @@ export function IntregationCards({ data }: IntregationCardProps) {
             {/* <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription> */}
           </DialogHeader>
 
-          <div className="grid gap-4 py-4">
+          {/* <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
                 Client ID
@@ -105,13 +128,14 @@ export function IntregationCards({ data }: IntregationCardProps) {
                 API Key
               </Label>
               <Input id="username" className="col-span-3" />
-              {/* <EyeOff /> */}
+              
             </div>
-          </div>
+          </div> */}
+          <IntegrationForm clientID={item?.clientId} apiKey={item?.apiKey} onSubmit={handleSave}></IntegrationForm>
           <DialogFooter>
-            <Button type="submit" onClick={() => setIsOpen(false)}>
+            {/* <Button type="submit" onClick={() => handleSave()}>
               Save changes
-            </Button>
+            </Button> */}
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -152,7 +176,7 @@ export function ConfigDialog({ isOpen }: ConfigDialogProps) {
           {/* <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription> */}
         </DialogHeader>
 
-        <div className="grid gap-4 py-4">
+        {/* <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
               Client ID
@@ -164,13 +188,13 @@ export function ConfigDialog({ isOpen }: ConfigDialogProps) {
               API Key
             </Label>
             <Input id="username" className="col-span-3" />
-            {/* <EyeOff /> */}
           </div>
-        </div>
+        </div> */}
+        <IntegrationForm></IntegrationForm>
         <DialogFooter>
-          <Button type="submit" onClick={handleOpenChange}>
+          {/* <Button type="submit" onClick={handleOpenChange}>
             Save changes
-          </Button>
+          </Button> */}
         </DialogFooter>
       </DialogContent>
     </Dialog>

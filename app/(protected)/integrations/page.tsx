@@ -1,7 +1,6 @@
 import { Separator } from "@/components/ui/separator";
-import { getIntegrationType } from "@/app/_utils/globalApi";
 import { IntregationCards } from "./_components/integrationCards";
-import { getInegration } from "@/data/integration";
+import { getInegration, getIntegrationByType } from "@/data/integration";
 
 async function Intagrations() {
   // const data = await getIntegrationType();
