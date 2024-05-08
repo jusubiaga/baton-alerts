@@ -20,14 +20,14 @@ const getUserCredentials = async (request: Request) => {
     const split = authorization.split(" ");
     if (split.length === 2) {
       const token = split[1];
-      const decodedToken = decodeToken(token) as UserCredentials;
+      const decodedToken: any = decodeToken(token);
       console.log("decoded token", decodedToken);
 
       if (isExpired(decodedToken.exp)) {
         return null;
       }
 
-      const account = await getAccountByProviderId(decodedToken?.sub);
+      const account: any = await getAccountByProviderId(decodedToken?.sub);
       console.log("ACC: ", account);
       const user = await getUserById(account?.userId);
       console.log("USER: ", user);

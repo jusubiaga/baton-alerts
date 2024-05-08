@@ -39,7 +39,7 @@ function CreateRule({ data }: CreateRuleProps) {
     const newCatalog = {
       tags: "",
       active: true,
-      ruleId: rule.id,
+      ruleId: rule?.id,
     };
 
     const catalog = await addRuleToCatalog(newCatalog);

@@ -47,7 +47,7 @@ export function IntregationCards({ data }: IntregationCardProps) {
   const [item, setItem] = useState<any>(null);
   const router = useRouter();
 
-  const handleSave = async (e) => {
+  const handleSave = async (e: any) => {
     console.log("IntregationCards");
     console.log("Event: ", e);
     // setIsOpen(true);
@@ -68,7 +68,7 @@ export function IntregationCards({ data }: IntregationCardProps) {
     setIsOpen(false);
   };
 
-  const handleClick = (data: IntregationData) => {
+  const handleClick = (data: any) => {
     setIsOpen(true);
 
     const integration = {
@@ -167,58 +167,58 @@ export function IntregationCards({ data }: IntregationCardProps) {
   );
 }
 
-type ConfigDialogProps = {
-  isOpen: boolean;
-  data: any;
-};
+// type ConfigDialogProps = {
+//   isOpen: boolean;
+//   data: any;
+// };
 
-export function ConfigDialog({ isOpen }: ConfigDialogProps) {
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+// export function ConfigDialog({ isOpen }: ConfigDialogProps) {
+//   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  //   const [modalOpen, setModalOpen, toggle] = useModal(true);
+//   //   const [modalOpen, setModalOpen, toggle] = useModal(true);
 
-  useEffect(() => {
-    console.log("ConfigDialog", modalOpen);
-  }, [modalOpen]);
+//   useEffect(() => {
+//     console.log("ConfigDialog", modalOpen);
+//   }, [modalOpen]);
 
-  const handleOpenChange = () => {
-    setModalOpen(false);
-  };
+//   const handleOpenChange = () => {
+//     setModalOpen(false);
+//   };
 
-  return (
-    <Dialog open={modalOpen} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="ghost" className="p-0">
-          <ChevronRight />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[625px]">
-        <DialogHeader>
-          <DialogTitle>Configure Plataform</DialogTitle>
-          {/* <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription> */}
-        </DialogHeader>
+//   return (
+//     <Dialog open={modalOpen} onOpenChange={handleOpenChange}>
+//       <DialogTrigger asChild>
+//         <Button variant="ghost" className="p-0">
+//           <ChevronRight />
+//         </Button>
+//       </DialogTrigger>
+//       <DialogContent className="sm:max-w-[625px]">
+//         <DialogHeader>
+//           <DialogTitle>Configure Plataform</DialogTitle>
+//           {/* <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription> */}
+//         </DialogHeader>
 
-        {/* <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Client ID
-            </Label>
-            <Input id="name" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              API Key
-            </Label>
-            <Input id="username" className="col-span-3" />
-          </div>
-        </div> */}
-        <IntegrationForm></IntegrationForm>
-        <DialogFooter>
-          {/* <Button type="submit" onClick={handleOpenChange}>
-            Save changes
-          </Button> */}
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
+//         {/* <div className="grid gap-4 py-4">
+//           <div className="grid grid-cols-4 items-center gap-4">
+//             <Label htmlFor="name" className="text-right">
+//               Client ID
+//             </Label>
+//             <Input id="name" className="col-span-3" />
+//           </div>
+//           <div className="grid grid-cols-4 items-center gap-4">
+//             <Label htmlFor="username" className="text-right">
+//               API Key
+//             </Label>
+//             <Input id="username" className="col-span-3" />
+//           </div>
+//         </div> */}
+//         <IntegrationForm></IntegrationForm>
+//         <DialogFooter>
+//           {/* <Button type="submit" onClick={handleOpenChange}>
+//             Save changes
+//           </Button> */}
+//         </DialogFooter>
+//       </DialogContent>
+//     </Dialog>
+//   );
+// }

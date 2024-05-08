@@ -69,7 +69,7 @@ export const {
         session.user.isOAuth = token.isOAuth as boolean;
       }
 
-      const [googleAccount] = await db.account.findMany({
+      const [googleAccount]: any = await db.account.findMany({
         where: { userId: session.user.id, provider: "google" },
       });
 
@@ -110,7 +110,7 @@ export const {
         } catch (error) {
           console.error("Error refreshing access token", error);
           // The error property will be used client-side to handle the refresh token error
-          session.error = "RefreshAccessTokenError";
+          // session.error = "RefreshAccessTokenError";
         }
       }
       return { ...session };

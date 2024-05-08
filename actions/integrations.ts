@@ -14,7 +14,7 @@ export const createInegrationAction = async (values: any) => {
     return { error: "Unauthorized" };
   }
 
-  const newIntegration: Intregration = {
+  const newIntegration: Partial<Intregration> = {
     userId: user.id,
     clientId: values.clientId,
     apiKey: values.apiKey,

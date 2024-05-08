@@ -35,22 +35,22 @@ export const getIntegrationByType = async (intregrationTypeId: string) => {
   return intregration;
 };
 
-export const createIntegration = async (data: Intregration) => {
+export const createIntegration = async (data: Partial<Intregration>) => {
   const user = await currentUser();
 
-  const integration = await getIntegrationByType(data.intregrationTypeId);
+  const integration = await getIntegrationByType(data?.intregrationTypeId ?? "");
 
   if (!integration) {
     return await db.intregration.create({
       data: {
-        intregrationTypeId: data.intregrationTypeId,
-        clientId: data.clientId,
-        apiKey: data.apiKey,
+        intregrationTypeId: data.intregrationTypeId ?? "",
+        clientId: data.clientId ?? "",
+        apiKey: data.apiKey ?? "",
         userId: user?.id ?? "",
       },
     });
   } else {
-    return updateIntegration(integration?.id, data.apiKey, data.clientId);
+    return updateIntegration(integration?.id, data?.apiKey ?? "", data?.clientId ?? "");
   }
 };
 

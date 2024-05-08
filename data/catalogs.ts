@@ -25,17 +25,17 @@ export const getCatalogs = async () => {
   return catalogs;
 };
 
-export const addRuleToCatalog = async (data: Catalog) => {
+export const addRuleToCatalog = async (data: Partial<Catalog>) => {
   const user = await currentUser();
 
   let catalog: Catalog | null = null;
   if (user) {
     catalog = await db.catalog.create({
       data: {
-        tags: data.tags,
-        active: data.active,
-        userId: user.id,
-        ruleId: data.ruleId,
+        tags: data.tags ?? "",
+        active: data.active ?? false,
+        userId: user.id ?? "",
+        ruleId: data.ruleId ?? "",
       },
     });
   }
