@@ -1,23 +1,18 @@
-import { currentUser } from "@/lib/auth";
 import db from "@/lib/db";
-import getServerSession from "next-auth";
-// import getToken from "next-auth/jwt";
-import authOptions from "@/auth.config";
-import { auth } from "@/auth";
+import getUserCredentials from "../_utils/getUserCredencial";
 
 export async function GET(request: Request, response: Response) {
-  const user = await currentUser();
-  const session = await getServerSession(authOptions);
+  const user = await getUserCredentials(request);
+  if (user === null) {
+    return new Response("No credentials provided", { status: 401 });
+  }
 
-  console.log("SESSION", await session.auth());
-  console.log("SESSION", await auth());
-  //   console.log("TOKEN", await ge);
-  // SearchParams
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.searchParams);
 
   const filter: any = {};
 
+  filter["userId"] = user.id;
   if (searchParams.get("intregrationTypeId")) {
     filter["intregrationTypeId"] = searchParams.get("intregrationTypeId");
   }
@@ -32,16 +27,18 @@ export async function GET(request: Request, response: Response) {
 }
 
 export async function POST(request: Request) {
-  const user = await currentUser();
-  console.log("USER ", user);
+  const user = await getUserCredentials(request);
+  if (user === null) {
+    return new Response("No credentials provided", { status: 401 });
+  }
 
   try {
     const body = await request.json();
 
-    const { tags, active, userId, ruleId } = body;
+    const { tags, active, ruleId } = body;
 
     const catalog = await db.catalog.create({
-      data: { tags, active, userId, ruleId },
+      data: { tags, active, userId: user.id, ruleId },
     });
     // }
 

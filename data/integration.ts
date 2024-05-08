@@ -3,17 +3,8 @@ import { currentUser } from "@/lib/auth";
 import db from "@/lib/db";
 import { Intregration } from "@prisma/client";
 
-export const getInegration = async () => {
-  const user = await currentUser();
-  console.log("Server Side Rendering ---");
+export const getIntegration = async () => {
   const session = await auth(); // calling session
-  console.log(session); // console log to read session
-
-  //   console.log("UUUSSSSEEEERRR: ", getServerSession());
-
-  // const intregrationType = await db.intregrationType.findMany({
-  //   // where: { userId: "clv4iruu90000dzavjsvcn4lb" },
-  // });
 
   let intregration: Array<any> = [];
   if (session) {
@@ -35,31 +26,39 @@ export const getInegration = async () => {
 
 export const getIntegrationByType = async (intregrationTypeId: string) => {
   const user = await currentUser();
-  console.log("Server Side Rendering ---");
-  const session = await auth(); // calling session
-  console.log(session); // console log to read session
 
-  //   console.log("UUUSSSSEEEERRR: ", getServerSession());
-
-  // const intregrationType = await db.intregrationType.findMany({
-  //   // where: { userId: "clv4iruu90000dzavjsvcn4lb" },
-  // });
-
-  let intregration;
-  if (session) {
-    intregration = await db.intregration.findFirst({ where: { userId: session?.user.id, intregrationTypeId } });
+  let intregration = null;
+  if (user) {
+    intregration = await db.intregration.findFirst({ where: { userId: user.id, intregrationTypeId } });
   }
-
-  console.log("INT BY TYPE", intregration);
 
   return intregration;
 };
 
-export const createInegration = async (data: Intregration) => {
-  // const user = await currentUser();
-  console.log("CREATE_INEGRATION");
-  // const session = await auth(); // calling session
-  // console.log(session); // console log to read session
+export const createIntegration = async (data: Intregration) => {
+  const user = await currentUser();
 
-  const createUser = await db.intregration.create({ data: data });
+  const integration = await getIntegrationByType(data.intregrationTypeId);
+
+  if (!integration) {
+    return await db.intregration.create({
+      data: {
+        intregrationTypeId: data.intregrationTypeId,
+        clientId: data.clientId,
+        apiKey: data.apiKey,
+        userId: user?.id ?? "",
+      },
+    });
+  } else {
+    return updateIntegration(integration?.id, data.apiKey, data.clientId);
+  }
+};
+
+export const updateIntegration = async (id: string, apiKey: string, clientId: string) => {
+  const integration = await db.intregration.update({
+    where: { id },
+    data: { apiKey, clientId },
+  });
+
+  return integration;
 };

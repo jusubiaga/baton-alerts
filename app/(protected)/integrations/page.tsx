@@ -1,12 +1,12 @@
 import { Separator } from "@/components/ui/separator";
 import { IntregationCards } from "./_components/integrationCards";
-import { getInegration, getIntegrationByType } from "@/data/integration";
+import { getIntegration } from "@/data/integration";
 
-async function Intagrations() {
+async function Integrations() {
   // const data = await getIntegrationType();
   // console.log(data);
 
-  const data = await getInegration();
+  const data = await getIntegration();
 
   return (
     <div>
@@ -21,4 +21,4 @@ async function Intagrations() {
   );
 }
 
-export default Intagrations;
+export default Integrations;

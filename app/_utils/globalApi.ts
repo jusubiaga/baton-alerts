@@ -25,34 +25,29 @@ const api = {
 // Request
 export const getIntegrationType = () => api.get("/intregrationType");
 
-function AxiosInterceptor() {
-  // Request interceptors
-  axiosClient.interceptors.request.use(
-    function (config) {
-      // if (token) {
-      //   config.headers["Authorization"] = "Bearer " + token;
-      // }
-      return config;
-    },
-    function (error) {
-      return Promise.reject(error);
-    }
-  );
+// Request interceptors
+axiosClient.interceptors.request.use(
+  function (config) {
+    // if (token) {
+    //   config.headers["Authorization"] = "Bearer " + token;
+    // }
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
 
-  // Response interceptors
-  axiosClient.interceptors.response.use(
-    (response) => {
-      console.log("Handle instance.interceptors.response, ", response);
-      return response;
-    },
-    (error) => {
-      console.log("Handle instance.interceptors.response ERROR", error);
-      const status = error.response ? error.response.status : null;
+// Response interceptors
+axiosClient.interceptors.response.use(
+  (response) => {
+    console.log("Handle instance.interceptors.response, ", response);
+    return response;
+  },
+  (error) => {
+    console.log("Handle instance.interceptors.response ERROR", error);
+    const status = error.response ? error.response.status : null;
 
-      return Promise.reject(error);
-    }
-  );
-}
-AxiosInterceptor();
-
-export default AxiosInterceptor;
+    return Promise.reject(error);
+  }
+);

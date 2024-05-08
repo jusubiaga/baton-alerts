@@ -1,8 +1,12 @@
 import { currentUser } from "@/lib/auth";
 import db from "@/lib/db";
+import getUserCredentials from "../_utils/getUserCredencial";
 
 export async function GET(request: Request) {
-  const user = await currentUser();
+  const user = await getUserCredentials(request);
+  if (user === null) {
+    return new Response("No credentials provided", { status: 401 });
+  }
 
   // SearchParams
   const url = new URL(request.url);

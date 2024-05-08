@@ -21,9 +21,12 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import IntegrationForm from "./integrationForm";
-import { createInegration } from "@/data/integration";
+import { createIntegration } from "@/data/integration";
 
 import { useSession } from "next-auth/react";
+import { createInegrationAction } from "@/actions/integrations";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const useModal = (initialMode = false) => {
   const [modalOpen, setModalOpen] = useState(initialMode);
@@ -41,28 +44,46 @@ type IntregationCardProps = {
 export function IntregationCards({ data }: IntregationCardProps) {
   //   const [modalOpen, setModalOpen, toggle] = useModal();
   const [isOpen, setIsOpen] = useState(false);
-  const [item, setItem] = useState<IntregationData | null>(null);
-  const session = useSession();
+  const [item, setItem] = useState<any>(null);
+  const router = useRouter();
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     console.log("IntregationCards");
     console.log("Event: ", e);
     // setIsOpen(true);
-    setIsOpen(false);
+
     console.log("DATA: ", item);
-    console.log("INT ", item.intregrations);
+
     // setItem({ ...item, clientId: e.clientId, apiKey: e.apiKey });
     const createInegrationData = {
-      userId: session?.data?.userId,
-      intregrationTypeId: item?.id,
+      intregrationTypeId: item?.intregrationTypeId,
       clientId: e.clientId,
       apiKey: e.apiKey,
     };
+
+    const int = await createInegrationAction(createInegrationData);
+    console.log("int: ", int);
+    toast.success("data.success");
+    router.refresh();
+    setIsOpen(false);
   };
 
   const handleClick = (data: IntregationData) => {
     setIsOpen(true);
-    setItem(data);
+
+    const integration = {
+      intregrationTypeId: data.id,
+      clientId: "",
+      apiKey: "",
+    };
+
+    if (data.intregrations.length > 0) {
+      integration.clientId = data.intregrations[0].clientId;
+      integration.apiKey = data.intregrations[0].apiKey;
+    }
+
+    console.log("DAAAAA", integration);
+    setItem(integration);
   };
 
   return (
@@ -87,6 +108,7 @@ export function IntregationCards({ data }: IntregationCardProps) {
               </div>
               {/* <Switch /> */}
               {data.enable ? <ChevronRight /> : <LockKeyhole />}
+              {data.clientId}
             </div>
           ))}
 
@@ -131,7 +153,7 @@ export function IntregationCards({ data }: IntregationCardProps) {
               
             </div>
           </div> */}
-          <IntegrationForm clientID={item?.clientId} apiKey={item?.apiKey} onSubmit={handleSave}></IntegrationForm>
+          <IntegrationForm clientId={item?.clientId} apiKey={item?.apiKey} onSubmit={handleSave}></IntegrationForm>
           <DialogFooter>
             {/* <Button type="submit" onClick={() => handleSave()}>
               Save changes

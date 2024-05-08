@@ -1,8 +1,12 @@
 import { currentUser } from "@/lib/auth";
 import db from "@/lib/db";
+import getUserCredentials from "../_utils/getUserCredencial";
 
 export async function GET(request: Request) {
-  const user = await currentUser();
+  const user = await getUserCredentials(request);
+  if (user === null) {
+    return new Response("No credentials provided", { status: 401 });
+  }
 
   // SearchParams
   const url = new URL(request.url);
@@ -10,14 +14,11 @@ export async function GET(request: Request) {
 
   const filter: any = {};
 
-  if (searchParams.get("userId")) {
-    filter["userId"] = searchParams.get("userId");
-  }
+  filter["userId"] = user.id;
+
   if (searchParams.get("intregrationTypeId")) {
     filter["intregrationTypeId"] = searchParams.get("intregrationTypeId");
   }
-
-  console.log(filter);
 
   const intregration = await db.intregration.findMany({
     where: filter,
@@ -27,24 +28,19 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const user = await currentUser();
-  console.log("USER ", user);
+  const user = await getUserCredentials(request);
+  if (user === null) {
+    return new Response("No credentials provided", { status: 401 });
+  }
 
   try {
     const body = await request.json();
 
-    const { userId, intregrationTypeId, clientId, apiKey } = body;
+    const { intregrationTypeId, clientId, apiKey } = body;
 
-    // const create = createInegration({ userId, intregrationTypeId, clientId, apiKey });
-    // const intregration = await prisma.intregration.findFirst({
-    //   where: { userId, intregrationTypeId },
-    // });
-
-    // if (!intregration) {
     const createIntregration = await db.intregration.create({
-      data: { userId, intregrationTypeId, clientId, apiKey },
+      data: { userId: user.id, intregrationTypeId, clientId, apiKey },
     });
-    // }
 
     return Response.json(createIntregration);
   } catch (error) {
