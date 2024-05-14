@@ -21,15 +21,18 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-type CreateRuleProps = {
+type AddRuleProps = {
   data: Rule[];
 };
 
-function CreateRule({ data }: CreateRuleProps) {
+function AddRule({ data }: AddRuleProps) {
   const router = useRouter();
   const [rule, setRule] = useState<Rule>();
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleAddRule = () => {
+    setIsOpen(true);
+  };
   const handleSelect = (rule: Rule) => {
     console.log("RULE: ", rule);
     setRule(rule);
@@ -44,39 +47,51 @@ function CreateRule({ data }: CreateRuleProps) {
 
     const catalog = await addRuleToCatalog(newCatalog);
     console.log("int: ", catalog);
-    toast.success("data.success");
-    router.refresh();
+    if (catalog) {
+      toast.success("Data Success");
+    } else {
+      toast.success("Data Error");
+    }
+
+    // router.refresh();
     setIsOpen(false);
   };
 
   return (
-    <Dialog onOpenChange={() => false}>
-      <DialogTrigger asChild>
+    <>
+      <Button variant="outline" onClick={handleAddRule}>
+        <CirclePlus className="mr-2 h-4 w-4" />
+        Add Rule
+      </Button>
+
+      <Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
+        {/* <DialogTrigger asChild>
         <Button variant="outline">
           <CirclePlus className="mr-2 h-4 w-4" />
           Add Rule
         </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Add Rule</DialogTitle>
-          <DialogDescription></DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4 w-full">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Rule
-            </Label>
-            <RuleList data={data} onSelect={handleSelect}></RuleList>
+      </DialogTrigger> */}
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add Rule</DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4 w-full">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Rule
+              </Label>
+              <RuleList data={data} onSelect={handleSelect}></RuleList>
+            </div>
           </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit" onClick={handleSubmit}>
-            Add rule
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter>
+            <Button type="submit" onClick={handleSubmit}>
+              Add rule
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
@@ -123,4 +138,4 @@ function RuleList({ data, onSelect }: RuleListProps) {
   );
 }
 
-export default CreateRule;
+export default AddRule;

@@ -26,6 +26,18 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useState } from "react";
 import { Catalog } from "@prisma/client";
+import { deleteCatalogById } from "@/data/catalogs";
+import { toast } from "sonner";
+
+const handleDeleteById = async (id: string) => {
+  const catalog = await deleteCatalogById(id);
+  console.log("int: ", catalog);
+  if (catalog) {
+    toast.success("Data Success");
+  } else {
+    toast.success("Data Error");
+  }
+};
 
 const columns: ColumnDef<Catalog>[] = [
   {
@@ -136,12 +148,12 @@ const columns: ColumnDef<Catalog>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.id)}>
+            <DropdownMenuItem>
               <Pencil className="mr-2 h-4 w-4" />
               <span>Edit</span>
             </DropdownMenuItem>
             {/* <DropdownMenuSeparator /> */}
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleDeleteById(row.original.id)}>
               <Trash className="mr-2 h-4 w-4" />
               <span>Delete</span>
             </DropdownMenuItem>

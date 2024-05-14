@@ -70,8 +70,9 @@ export default function IntegrationForm({ clientId, apiKey, onSubmit }: Integrat
             </FormItem>
           )}
         />
-
-        <Button type="submit">Save</Button>
+        <div className="flex justify-end">
+          <Button type="submit">Save</Button>
+        </div>
       </form>
     </Form>
   );
