@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { MoreHorizontal, Pencil } from "lucide-react";
 import { FaUser } from "react-icons/fa";
+import { TbReport } from "react-icons/tb";
 
 const DATA = [
   {
@@ -45,7 +46,10 @@ async function Alerts() {
   return (
     <div>
       <header className="flex justify-between m-3">
-        <h1 className="scroll-m-20 text-xl font-semibold tracking-tight place-self-center">Alerts</h1>
+        <div className=" flex place-self-center items-center">
+          <TbReport className="mr-2 h-4 w-4" />
+          <h1 className="scroll-m-20 text-xl font-semibold tracking-tight place-self-center">Alerts</h1>
+        </div>
         <div></div>
       </header>
       <Separator />

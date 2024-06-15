@@ -1,6 +1,7 @@
 import { Separator } from "@/components/ui/separator";
 import { IntregationCards } from "./_components/integrationCards";
 import { getIntegration } from "@/data/integration";
+import { Unplug } from "lucide-react";
 
 async function Integrations() {
   // const data = await getIntegrationType();
@@ -11,7 +12,10 @@ async function Integrations() {
   return (
     <div>
       <header className="flex justify-between m-3">
-        <h1 className="scroll-m-20 text-xl font-semibold tracking-tight place-self-center">Intagrations</h1>
+        <div className=" flex place-self-center items-center">
+          <Unplug className="mr-2 h-4 w-4" />
+          <h1 className="scroll-m-20 text-xl font-semibold tracking-tight place-self-center">Intagrations</h1>
+        </div>
       </header>
       <Separator />
       <div className="flex content-center justify-center p-4">

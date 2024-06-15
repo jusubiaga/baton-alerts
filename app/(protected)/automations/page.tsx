@@ -7,6 +7,7 @@ import { Rule } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
 import Link from "next/link";
+import { FaGear } from "react-icons/fa6";
 
 async function Automations() {
   const catalogs = await getCatalogs();
@@ -16,11 +17,14 @@ async function Automations() {
   return (
     <div>
       <header className="flex justify-between m-3">
-        <h1 className="scroll-m-20 text-xl font-semibold tracking-tight place-self-center">Automations</h1>
+        <div className=" flex place-self-center items-center">
+          <FaGear className="mr-2 h-4 w-4" />
+          <h1 className="scroll-m-20 text-xl font-semibold tracking-tight ">Automations</h1>
+        </div>
         <div>
           <AddRule data={rules}></AddRule>
           <Button className="ml-5">
-            <Play className="mr-2 h-4 w-4" /> <Link href="/alerts">Run</Link>
+            <Play className="mr-2 h-4 w-4" /> <Link href="/alerts">Run report</Link>
           </Button>
         </div>
       </header>

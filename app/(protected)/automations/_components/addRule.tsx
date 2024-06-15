@@ -20,6 +20,22 @@ import { Check, ChevronsUpDown, CirclePlus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import { NavigationMenuDemo } from "./navRule";
 
 type AddRuleProps = {
   data: Rule[];
@@ -84,6 +100,9 @@ function AddRule({ data }: AddRuleProps) {
               <RuleList data={data} onSelect={handleSelect}></RuleList>
             </div>
           </div>
+
+          <NavRule></NavRule>
+          {/* <NavigationMenuDemo></NavigationMenuDemo> */}
           <DialogFooter>
             <Button type="submit" onClick={handleSubmit}>
               Add rule
@@ -137,5 +156,56 @@ function RuleList({ data, onSelect }: RuleListProps) {
     </Popover>
   );
 }
+
+const NavRule = () => {
+  return (
+    <div className="flex">
+      <div>
+        <Card>
+          <CardContent>
+            <NavigationMenu orientation="vertical">
+              <NavigationMenuList className="flex-col items-start space-x-0">
+                <NavigationMenuItem>
+                  <Link href="" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>All</NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <Link href="" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>Google Adds</NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link href="" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>Facebook</NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link href="" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>Instagram</NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link href="" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>TikTok</NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div>
+        <Card>
+          <CardContent>
+            <p>Card Content</p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
 
 export default AddRule;
