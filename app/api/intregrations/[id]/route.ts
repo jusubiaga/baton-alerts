@@ -12,11 +12,11 @@ export async function PATCH(_request: Request, { params }: { params: { id: strin
   try {
     const body = await _request.json();
 
-    const { clientId, apiKey } = body;
+    const { clientId, clientSecret } = body;
 
     const createIntregration = await db.intregration.update({
       where: { id: params.id },
-      data: { clientId, apiKey },
+      data: { clientId, clientSecret },
     });
 
     return Response.json(createIntregration);

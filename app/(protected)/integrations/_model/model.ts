@@ -5,5 +5,5 @@ type IntregationData = {
   enable: boolean;
   userId: string;
   clientId: string;
-  apiKey: String;
+  clientSecret: String;
 };

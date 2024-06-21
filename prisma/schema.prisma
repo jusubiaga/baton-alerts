@@ -88,8 +88,9 @@ model TwoFactorConfirmation {
 model IntregrationType {
   id            String         @id @default(cuid())
   name          String
+  description   String
   logo          String         @default("")
-  enable        Boolean        @default(false)
+  status        String         @default("")
   intregrations Intregration[]
   rules         Rule[]
 }
@@ -99,7 +100,8 @@ model Intregration {
   userId             String
   intregrationTypeId String
   clientId           String
-  apiKey             String
+  clientSecret       String
+  campaignPrefix     String
   user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   intregrationType   IntregrationType @relation(fields: [intregrationTypeId], references: [id], onDelete: Cascade)
 
@@ -109,12 +111,15 @@ model Intregration {
 model Rule {
   id                 String           @id @default(cuid())
   name               String
+  description        String           @default("")
+  available          Boolean          @default(false)
+  avatar             String           @default("")
   catalogs           Catalog[]
   intregrationTypeId String
   intregrationType   IntregrationType @relation(fields: [intregrationTypeId], references: [id], onDelete: Cascade)
   runs               Run[]
 
-  @@unique([name, intregrationTypeId])
+  @@unique([id, intregrationTypeId])
 }
 
 model Catalog {

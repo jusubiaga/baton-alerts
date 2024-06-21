@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BellRing, Check, ChevronRight, Divide, EyeOff, LockKeyhole } from "lucide-react";
+import { BellRing, Check, ChevronRight, Divide, EyeOff, Loader2, LockKeyhole } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Switch } from "@/components/ui/switch";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { ElementType, ReactNode, useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import IntegrationForm from "./integrationForm";
 import { createIntegration } from "@/data/integration";
@@ -27,6 +27,23 @@ import { useSession } from "next-auth/react";
 import { createInegrationAction } from "@/actions/integrations";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
+import { IntregrationType } from "@prisma/client";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 export const useModal = (initialMode = false) => {
   const [modalOpen, setModalOpen] = useState(initialMode);
@@ -42,183 +59,256 @@ type IntregationCardProps = {
 };
 
 export function IntregationCards({ data }: IntregationCardProps) {
-  //   const [modalOpen, setModalOpen, toggle] = useModal();
   const [isOpen, setIsOpen] = useState(false);
   const [item, setItem] = useState<any>(null);
+  const [loadings, setLoadings] = useState(false);
+
   const router = useRouter();
 
-  const handleSave = async (e: any) => {
-    console.log("IntregationCards");
-    console.log("Event: ", e);
-    // setIsOpen(true);
-
-    console.log("DATA: ", item);
-
-    // setItem({ ...item, clientId: e.clientId, apiKey: e.apiKey });
+  const handleOnSubmit = async (event) => {
+    console.log("handleOnSubmit", event);
     const createInegrationData = {
-      intregrationTypeId: item?.intregrationTypeId,
-      clientId: e.clientId,
-      apiKey: e.apiKey,
+      intregrationTypeId: event.id,
+      clientId: event.clientId,
+      clientSecret: event.clientSecret,
+      campaignPrefix: event.campaignPrefix,
     };
-
+    setLoadings(true);
     const int = await createInegrationAction(createInegrationData);
+
     console.log("int: ", int);
-    toast.success("data.success");
+
     router.refresh();
-    setIsOpen(false);
+    setLoadings(false);
+    toast.success("data.success");
   };
 
-  const handleClick = (data: any) => {
-    setIsOpen(true);
+  const populateCards = (data: any) => {
+    return (
+      <>
+        {data.map((item) => (
+          <Card key={item.id} className="rounded-lg p-4 shadow-lg w-[350px]">
+            <CardHeader className="border-b p-0">
+              <div className="flex items-center gap-2 font-semibold py-2">
+                <Avatar>
+                  <AvatarImage src={item.logo} alt="@cald" />
+                  <AvatarFallback>I</AvatarFallback>
+                </Avatar>
+                <h4 className="">{item.name}</h4>
+              </div>
+            </CardHeader>
+            <CardContent className="py-4 border-b">
+              <p className="text-sm">{item.description}</p>
+            </CardContent>
 
-    const integration = {
-      intregrationTypeId: data.id,
-      clientId: "",
-      apiKey: "",
-    };
+            <CardFooter className="flex  flex-col justify-end items-start pt-4 pb-0">
+              <p className="text-sm text-muted-foreground">
+                Status: {!!item?.intregrations?.id ? "Configured" : "Not configured"}
+              </p>
 
-    if (data.intregrations.length > 0) {
-      integration.clientId = data.intregrations[0].clientId;
-      integration.apiKey = data.intregrations[0].apiKey;
-    }
-
-    console.log("DAAAAA", integration);
-    setItem(integration);
+              <SheetDemo
+                className="mt-4 self-end"
+                buttonLabel="Manage"
+                data={item}
+                onSubmit={handleOnSubmit}
+              ></SheetDemo>
+            </CardFooter>
+          </Card>
+        ))}
+      </>
+    );
   };
 
   return (
     <>
-      <Card className="w-[90%] ">
-        <CardHeader>
-          <CardTitle>Add Plataform</CardTitle>
-          {/* <CardDescription>You have 3 unread messages.</CardDescription> */}
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          {data.map((data) => (
-            <div
-              key={data.id}
-              className="flex items-center space-x-4 rounded-md border p-4 hover:bg-gray-100 hover:cursor-pointer"
-              onClick={() => handleClick(data)}
-            >
-              <span className="flex h-3 w-3 translate-y-1 rounded-full bg-gray-400" />
-              <Image src={`/${data.logo}`} alt="" width="64" height="64" />
-              <div className="flex-1 space-y-1">
-                <p className="text-sm font-medium leading-none">{data.name}</p>
-                {/* <p className="text-sm text-muted-foreground">Send notifications to device.</p> */}
+      {!loadings ? populateCards(data) : <div>Spinner</div>}
+      {/* {data.map((item) => (
+        <>
+          <Card key={item.id} className="rounded-lg p-4 shadow-lg w-[350px]">
+            <CardHeader className="border-b p-0">
+              <div className="flex items-center gap-2 font-semibold py-2">
+                <Avatar>
+                  <AvatarImage src={item.logo} alt="@cald" />
+                  <AvatarFallback>I</AvatarFallback>
+                </Avatar>
+                <h4 className="">{item.name}</h4>
               </div>
-              {/* <Switch /> */}
-              {data.enable ? <ChevronRight /> : <LockKeyhole />}
-              {data.clientId}
-            </div>
-          ))}
+            </CardHeader>
+            <CardContent className="py-4 border-b">
+              <p className="text-sm">{item.description}</p>
+            </CardContent>
 
-          {/* <div>
-          {notifications.map((notification, index) => (
-            <div key={index} className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0">
-              <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-              <div className="space-y-1">
-                <p className="text-sm font-medium leading-none">{notification.title}</p>
-                <p className="text-sm text-muted-foreground">{notification.description}</p>
-              </div>
-            </div>
-          ))}
-        </div> */}
-        </CardContent>
-        <CardFooter>
-          {/* <Button className="w-full">
-          <Check className="mr-2 h-4 w-4" /> Mark all as read
-        </Button> */}
-        </CardFooter>
-      </Card>
+            <CardFooter className="flex  flex-col justify-end items-start pt-4 pb-0">
+              <p className="text-sm text-muted-foreground">Status: {item.status}</p>
 
-      <Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
-        <DialogContent className="sm:max-w-[625px]">
-          <DialogHeader>
-            <DialogTitle>Configure Plataform</DialogTitle>
-            {/* <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription> */}
-          </DialogHeader>
-
-          {/* <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Client ID
-              </Label>
-              <Input id="name" className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="username" className="text-right">
-                API Key
-              </Label>
-              <Input id="username" className="col-span-3" />
-              
-            </div>
-          </div> */}
-          <IntegrationForm clientId={item?.clientId} apiKey={item?.apiKey} onSubmit={handleSave}></IntegrationForm>
-          <DialogFooter>
-            {/* <Button type="submit" onClick={() => handleSave()}>
-              Save changes
-            </Button> */}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* <ConfigDialog></ConfigDialog> */}
+              <SheetDemo
+                className="mt-4 self-end"
+                buttonLabel="Manage"
+                data={item}
+                onSubmit={handleOnSubmit}
+              ></SheetDemo>
+            </CardFooter>
+          </Card>
+        </>
+      ))} */}
     </>
   );
 }
 
-// type ConfigDialogProps = {
-//   isOpen: boolean;
-//   data: any;
-// };
+const formSchema = z.object({
+  clientId: z.string(),
+  clientSecret: z.string(),
+  campaignPrefix: z.string(),
+});
 
-// export function ConfigDialog({ isOpen }: ConfigDialogProps) {
-//   const [modalOpen, setModalOpen] = useState<boolean>(false);
+type SheetDemoProps = {
+  data: any;
+  buttonLabel: string;
+  className?: string;
+  onSubmit: (event: any) => void;
+};
 
-//   //   const [modalOpen, setModalOpen, toggle] = useModal(true);
+function SheetDemo({ buttonLabel, className = "", data, onSubmit }: SheetDemoProps) {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      clientId: data?.intregrations?.clientId ?? "",
+      clientSecret: data?.intregrations?.clientSecret ?? "",
+      campaignPrefix: data?.intregrations?.campaignPrefix ?? "",
+    },
+  });
 
-//   useEffect(() => {
-//     console.log("ConfigDialog", modalOpen);
-//   }, [modalOpen]);
+  const handleSubmit = (event) => {
+    console.log("handleSubmit", event);
 
-//   const handleOpenChange = () => {
-//     setModalOpen(false);
-//   };
+    const item = {
+      ...data,
+      ...event,
+    };
+    onSubmit(item);
+  };
 
-//   return (
-//     <Dialog open={modalOpen} onOpenChange={handleOpenChange}>
-//       <DialogTrigger asChild>
-//         <Button variant="ghost" className="p-0">
-//           <ChevronRight />
-//         </Button>
-//       </DialogTrigger>
-//       <DialogContent className="sm:max-w-[625px]">
-//         <DialogHeader>
-//           <DialogTitle>Configure Plataform</DialogTitle>
-//           {/* <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription> */}
-//         </DialogHeader>
+  const handleTest = (event) => {
+    event.preventDefault();
+    console.log("handleTest");
+  };
 
-//         {/* <div className="grid gap-4 py-4">
-//           <div className="grid grid-cols-4 items-center gap-4">
-//             <Label htmlFor="name" className="text-right">
-//               Client ID
-//             </Label>
-//             <Input id="name" className="col-span-3" />
-//           </div>
-//           <div className="grid grid-cols-4 items-center gap-4">
-//             <Label htmlFor="username" className="text-right">
-//               API Key
-//             </Label>
-//             <Input id="username" className="col-span-3" />
-//           </div>
-//         </div> */}
-//         <IntegrationForm></IntegrationForm>
-//         <DialogFooter>
-//           {/* <Button type="submit" onClick={handleOpenChange}>
-//             Save changes
-//           </Button> */}
-//         </DialogFooter>
-//       </DialogContent>
-//     </Dialog>
-//   );
-// }
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button className={className}>{buttonLabel}</Button>
+      </SheetTrigger>
+
+      <SheetContent className="sm:max-w-[625px]">
+        <SheetHeader>
+          <SheetTitle>
+            <div className="flex items-center gap-2 font-semibold py-2">
+              <Avatar>
+                <AvatarImage src={data?.logo} alt="@cald" />
+                <AvatarFallback>I</AvatarFallback>
+              </Avatar>
+              <h4 className="">{data?.name}</h4>
+            </div>
+          </SheetTitle>
+          <SheetDescription>{data?.description}</SheetDescription>
+          <Separator />
+        </SheetHeader>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+            <div className="grid gap-4 py-4">
+              <FormField
+                control={form.control}
+                name="clientId"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-4 items-center gap-4">
+                    <FormLabel className="text-left">Client ID</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Client ID" {...field} className="col-span-3" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Separator />
+              <FormField
+                control={form.control}
+                name="clientSecret"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-4 items-center gap-4">
+                    <FormLabel className="text-left">Client Secret</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Client Secret" {...field} className="col-span-3" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Separator />
+              <FormField
+                control={form.control}
+                name="campaignPrefix"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-4 items-center gap-4">
+                    <FormLabel className="text-left">Campaign Prefix</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Campaign Prefix" {...field} className="col-span-3" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Separator />
+            </div>
+
+            <SheetFooter>
+              <Button variant="secondary" onClick={handleTest}>
+                Test Connection
+              </Button>
+              <SheetClose asChild>
+                <Button type="submit">Save changes</Button>
+              </SheetClose>
+            </SheetFooter>
+          </form>
+        </Form>
+
+        {/* <form id="formRef" onSubmit={handleSubmit}>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="clientId" className="text-left">
+                Client ID
+              </Label>
+              <Input id="clientId" className="col-span-3" {... value: "dsdsds" } />
+            </div>
+            <Separator />
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="clientSecret" className="text-left">
+                Client Secret
+              </Label>
+              <Input id="clientSecret" className="col-span-3" />
+            </div>
+            <Separator />
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="campaignPrefix" className="text-left">
+                Campaign Prefix
+              </Label>
+              <Input id="campaignPrefix" className="col-span-3" />
+            </div>
+            <Separator />
+          </div>
+
+
+          <SheetFooter>
+            <Button variant="secondary" onClick={handleTest}>
+              Test Connection
+            </Button>
+            <SheetClose asChild>
+              <Button type="submit">Save changes</Button>
+            </SheetClose>
+          </SheetFooter>
+        </form>
+        <div>{JSON.stringify(data)}</div> */}
+      </SheetContent>
+    </Sheet>
+  );
+}

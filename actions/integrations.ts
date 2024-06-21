@@ -17,7 +17,8 @@ export const createInegrationAction = async (values: any) => {
   const newIntegration: Partial<Intregration> = {
     userId: user.id,
     clientId: values.clientId,
-    apiKey: values.apiKey,
+    clientSecret: values.clientSecret,
+    campaignPrefix: values.campaignPrefix,
     intregrationTypeId: values.intregrationTypeId,
   };
 

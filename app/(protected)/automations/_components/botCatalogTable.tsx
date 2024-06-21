@@ -1,10 +1,9 @@
-"use client";
 import { Button } from "@/components/ui/button";
 
 import { cn } from "@/lib/utils";
 
-import { MoreHorizontal, Pencil, Search, Trash } from "lucide-react";
-import { useState } from "react";
+import { ArrowUpDown, Search } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import {
   ColumnDef,
@@ -22,129 +21,110 @@ import {
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { deleteCatalogById } from "@/data/catalogs";
+import { getBotAction } from "@/actions/bot";
+import { addRuleToCatalog } from "@/data/catalogs";
 import { toast } from "sonner";
-import AddBotsButton from "./addBotsButton";
 
-// export type Payment = {
-//   id: string;
-//   code: string;
-//   name: string;
-//   avatar: string;
-//   lastRun?: string;
-//   nextRun?: string;
-// };
+const ActionButton = ({ row }) => {
+  const handleInstall = async () => {
+    console.log("handleInstall");
+    const newCatalog = {
+      tags: "",
+      active: true,
+      ruleId: row.original?.id,
+    };
 
-// const data: Payment[] = [
-//   {
-//     id: "m5gr84i9",
-//     code: "FVT",
-//     name: "Frontify Video Uploader for TikTok",
-//     avatar: "/googleAds.png",
-//     lastRun: "3 minutes ago",
-//     nextRun: "Tomorrow at 3:30pm",
-//   },
-//   {
-//     id: "3u1reuv4",
-//     code: "FTU",
-//     name: "Frontify AI metadata tagger",
-//     avatar: "/googleAds.png",
-//     lastRun: "10 minutes ago",
-//     nextRun: "Next Friday at 3:30pm",
-//   },
-// ];
+    const catalog = await addRuleToCatalog(newCatalog);
+    console.log("int: ", catalog);
+    if (catalog) {
+      toast.success("Data Success");
+    } else {
+      toast.success("Data Error");
+    }
+  };
+
+  const handleNotifyMe = () => {
+    console.log("handleNotifyMe");
+  };
+
+  return (
+    <>
+      {row.original.available ? (
+        <Button variant="default" onClick={handleInstall}>
+          Install
+        </Button>
+      ) : (
+        <Button variant="outline" onClick={handleNotifyMe}>
+          Notify Me
+        </Button>
+      )}
+    </>
+  );
+};
 
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => <div className="flex items-center gap-2">{row.getValue("id")}</div>,
-  },
-
-  {
-    accessorKey: "rule.id",
-    id: "ruleId",
     header: "Bot ID",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
         <div className="w-[40px] h-[40px]">
           <Avatar>
-            <AvatarImage src={row.original.rule.avatar} alt="@cald" />
+            <AvatarImage src={row.original.avatar} alt="@cald" />
             <AvatarFallback>I</AvatarFallback>
           </Avatar>
         </div>
-        {row.getValue("ruleId")}
+        {row.getValue("id")}
       </div>
     ),
   },
   {
-    accessorKey: "rule.name",
-    id: "ruleName",
-    header: "Bot name",
-    size: 770,
-    cell: ({ row }) => <div className="capitalize">{row.getValue("ruleName")}</div>,
-  },
-  {
-    accessorKey: "lastRun",
-    header: "Last Run",
-    cell: ({ row }) => <div className="capitalize">{"lastRun"}</div>,
-  },
-  {
-    accessorKey: "nextRun",
-    header: "Next Run",
-    cell: ({ row }) => <div className="capitalize">{"nextRun"}</div>,
-  },
-
-  {
-    id: "actions",
-    header: () => <AddBotsButton className="mt-4 w-full" buttonLabel="Add"></AddBotsButton>,
-    cell: ({ row }) => {
-      const handleDelete = async (event) => {
-        console.log("handleDelete", event);
-        const del = await deleteCatalogById(event.id);
-        toast("Delete");
-      };
-
+    accessorKey: "name",
+    header: ({ column }) => {
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <Pencil className="mr-2 h-4 w-4" />
-              <span>Edit</span>
-            </DropdownMenuItem>
-            {/* <DropdownMenuSeparator /> */}
-            <DropdownMenuItem onClick={() => handleDelete(row.original)}>
-              <Trash className="mr-2 h-4 w-4" />
-              <span>Delete</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          Bot Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
       );
     },
+    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "available",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+
+    cell: ({ row }) => <div className="capitalize">{row.getValue("available") ? "Available" : "Coming soon"}</div>,
+  },
+  {
+    accessorKey: "action",
+    header: "",
+    cell: ({ row }) => <ActionButton row={row}></ActionButton>,
   },
 ];
 
-export default function CatalogTable({ data }) {
+type BotCatalogTableProps = {
+  search: string;
+};
+
+export default function BotCatalogTable({ search }: BotCatalogTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    id: false,
-  });
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [data, setData] = useState([]);
+
+  const rulesData = async () => {
+    console.log("rulesData");
+    const bots = await getBotAction();
+    setData(bots);
+  };
 
   const table = useReactTable({
     data,
@@ -165,8 +145,30 @@ export default function CatalogTable({ data }) {
     },
   });
 
+  useEffect(() => {
+    rulesData();
+  }, []);
+
+  useEffect(() => {
+    table.getColumn("name")?.setFilterValue(search);
+  }, [search]);
+
   return (
     <div className="h-[80%]">
+      {/* <div className="w-full flex-1">
+        <form>
+          <div className="relative">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="type to search ..."
+              value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
+              className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
+            />
+          </div>
+        </form>
+      </div> */}
+
       <div className="w-full">
         <div className="rounded-md border">
           <Table>
@@ -175,7 +177,7 @@ export default function CatalogTable({ data }) {
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id} style={{ width: header.getSize() }}>
+                      <TableHead key={header.id}>
                         {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                       </TableHead>
                     );

@@ -9,6 +9,7 @@ export const getIntegration = async () => {
   let intregration: Array<any> = [];
   if (session) {
     intregration = await db.intregrationType.findMany({
+      orderBy: [{ id: "asc" }],
       include: {
         intregrations: {
           where: {
@@ -19,9 +20,13 @@ export const getIntegration = async () => {
     });
   }
 
-  console.log("INT", intregration);
+  const data = intregration.map((item) => {
+    return { ...item, intregrations: item?.intregrations.length > 0 ? { ...item.intregrations[0] } : {} };
+  });
 
-  return intregration;
+  console.log("INT", data);
+
+  return data;
 };
 
 export const getIntegrationByType = async (intregrationTypeId: string) => {
@@ -45,19 +50,25 @@ export const createIntegration = async (data: Partial<Intregration>) => {
       data: {
         intregrationTypeId: data.intregrationTypeId ?? "",
         clientId: data.clientId ?? "",
-        apiKey: data.apiKey ?? "",
+        clientSecret: data.clientSecret ?? "",
+        campaignPrefix: data.campaignPrefix ?? "",
         userId: user?.id ?? "",
       },
     });
   } else {
-    return updateIntegration(integration?.id, data?.apiKey ?? "", data?.clientId ?? "");
+    return updateIntegration(
+      integration?.id,
+      data?.clientSecret ?? "",
+      data?.clientId ?? "",
+      data?.campaignPrefix ?? ""
+    );
   }
 };
 
-export const updateIntegration = async (id: string, apiKey: string, clientId: string) => {
+export const updateIntegration = async (id: string, clientSecret: string, clientId: string, campaignPrefix: string) => {
   const integration = await db.intregration.update({
     where: { id },
-    data: { apiKey, clientId },
+    data: { clientSecret, clientId, campaignPrefix },
   });
 
   return integration;
