@@ -36,10 +36,10 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const { intregrationTypeId, clientId, clientSecret } = body;
+    const { intregrationTypeId, clientId, clientSecret, campaignPrefix } = body;
 
     const createIntregration = await db.intregration.create({
-      data: { userId: user.id, intregrationTypeId, clientId, clientSecret },
+      data: { userId: user.id, intregrationTypeId, clientId, clientSecret, campaignPrefix },
     });
 
     return Response.json(createIntregration);

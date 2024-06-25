@@ -106,7 +106,7 @@ export const columns: ColumnDef<any>[] = [
     id: "actions",
     header: () => <AddBotsButton className="mt-4 w-full" buttonLabel="Add"></AddBotsButton>,
     cell: ({ row }) => {
-      const handleDelete = async (event) => {
+      const handleDelete = async (event: any) => {
         console.log("handleDelete", event);
         const del = await deleteCatalogById(event.id);
         toast("Delete");
@@ -138,7 +138,7 @@ export const columns: ColumnDef<any>[] = [
   },
 ];
 
-export default function CatalogTable({ data }) {
+export default function CatalogTable({ data }: any) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({

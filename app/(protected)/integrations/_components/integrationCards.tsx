@@ -65,7 +65,7 @@ export function IntregationCards({ data }: IntregationCardProps) {
 
   const router = useRouter();
 
-  const handleOnSubmit = async (event) => {
+  const handleOnSubmit = async (event: any) => {
     console.log("handleOnSubmit", event);
     const createInegrationData = {
       intregrationTypeId: event.id,
@@ -86,7 +86,7 @@ export function IntregationCards({ data }: IntregationCardProps) {
   const populateCards = (data: any) => {
     return (
       <>
-        {data.map((item) => (
+        {data.map((item: any) => (
           <Card key={item.id} className="rounded-lg p-4 shadow-lg w-[350px]">
             <CardHeader className="border-b p-0">
               <div className="flex items-center gap-2 font-semibold py-2">
@@ -178,7 +178,7 @@ function SheetDemo({ buttonLabel, className = "", data, onSubmit }: SheetDemoPro
     },
   });
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: any) => {
     console.log("handleSubmit", event);
 
     const item = {
@@ -188,7 +188,7 @@ function SheetDemo({ buttonLabel, className = "", data, onSubmit }: SheetDemoPro
     onSubmit(item);
   };
 
-  const handleTest = (event) => {
+  const handleTest = (event: any) => {
     event.preventDefault();
     console.log("handleTest");
   };
