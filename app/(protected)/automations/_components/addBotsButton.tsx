@@ -24,11 +24,11 @@ import { Input } from "@/components/ui/input";
 
 type AddBotsButtonProps = {
   buttonLabel: string;
-  data: Rule[];
+  data?: Rule[];
   className?: string;
 };
 
-function AddBotsButton({ buttonLabel = "Add", data, className = "" }: AddBotsButtonProps) {
+function AddBotsButton({ buttonLabel = "Add", className = "" }: AddBotsButtonProps) {
   const router = useRouter();
   const [rule, setRule] = useState<Rule>();
   const [isOpen, setIsOpen] = useState(false);

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { usePathname } from "next/navigation";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
 interface NavProps {
   isCollapsed: boolean;
@@ -52,7 +53,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
               key={index}
               href={link.href}
               className={cn(
-                buttonVariants({ variant: link.href === pathNane ? "default" : "ghost", size: "sm" }),
+                buttonVariants({ variant: link.href === pathNane ? "default" : "ghost", size: "default" }),
                 link.variant === "default" && "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
                 "justify-start",
                 "font-size: 14px"
@@ -61,9 +62,21 @@ export function Nav({ links, isCollapsed }: NavProps) {
               <link.icon className="mr-2 h-4 w-4" />
               {link.title}
               {link.label && (
-                <span className={cn("ml-auto", link.variant === "default" && "text-background dark:text-white")}>
-                  {link.label}
-                </span>
+                <Avatar
+                  className={cn(
+                    "ml-auto",
+                    "w-[30px] h-[30px]",
+                    link.href === pathNane ? "text-background" : "bg-gray-700"
+                  )}
+                >
+                  <AvatarFallback className={cn(link.href === pathNane ? "bg-gray-700" : "bg-gray-700 text-white")}>
+                    {link.label}
+                  </AvatarFallback>
+                </Avatar>
+
+                // <span className={cn("ml-auto", link.variant === "default" && "text-background dark:text-white")}>
+                //   {link.label}
+                // </span>
               )}
             </Link>
           )

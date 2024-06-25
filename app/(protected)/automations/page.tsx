@@ -18,7 +18,7 @@ async function Automations() {
   return (
     <>
       {catalogs.length === 0 ? (
-        <div className="flex flex-1 items-center justify-center rounded-lg h-screen">
+        <div className="flex flex-1 items-center justify-center rounded-lg">
           <div className="flex flex-col items-center gap-1 text-center">
             <h3 className="text-2xl font-bold tracking-tight">No bots installed yet</h3>
 
@@ -29,7 +29,7 @@ async function Automations() {
           </div>
         </div>
       ) : (
-        <div className="flex content-center p-4 flex-wrap gap-4">
+        <div className="flex p-4 flex-wrap gap-4">
           <AutomationsTable data={catalogs}></AutomationsTable>
         </div>
       )}

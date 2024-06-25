@@ -45,7 +45,7 @@ const DATA = [
 async function RunLog() {
   // const user = useCurrentUser();
   return (
-    <div className="flex flex-1 items-center justify-center rounded-lg h-screen">
+    <div className="flex flex-1 items-center justify-center rounded-lg">
       <div className="flex flex-col items-center gap-1 text-center">
         <h3 className="text-2xl font-bold tracking-tight">No runs yet</h3>
 

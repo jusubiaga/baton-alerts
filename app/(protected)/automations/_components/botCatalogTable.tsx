@@ -25,7 +25,7 @@ import { getBotAction } from "@/actions/bot";
 import { addRuleToCatalog } from "@/data/catalogs";
 import { toast } from "sonner";
 
-const ActionButton = ({ row }) => {
+const ActionButton = ({ row }: any) => {
   const handleInstall = async () => {
     console.log("handleInstall");
     const newCatalog = {
@@ -118,12 +118,12 @@ export default function BotCatalogTable({ search }: BotCatalogTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Array<any>>([]);
 
   const rulesData = async () => {
     console.log("rulesData");
     const bots = await getBotAction();
-    setData(bots);
+    setData(() => bots as Array<any>);
   };
 
   const table = useReactTable({

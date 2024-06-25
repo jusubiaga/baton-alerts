@@ -8,7 +8,7 @@ const Container = ({ children }: ContainerProps) => {
   return (
     <div className="h-full w-full">
       <Navbar />
-      {children}
+      <div className="flex h-[90%]">{children}</div>
     </div>
   );
 };

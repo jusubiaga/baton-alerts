@@ -5,6 +5,7 @@ import MenuSidebar from "./menu-sidebar";
 import UserSidebar from "./user-sidebar";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function Sidebar() {
   return (
@@ -16,7 +17,54 @@ export default function Sidebar() {
         <div className="grow">
           <MenuSidebar></MenuSidebar>
         </div>
-        <div>Guide</div>
+        <div className="p-4 flex flex-col gap-2">
+          <p className="text-sm font-semibold py-2">Setup Guide</p>
+          <div className="flex items-center space-x-2">
+            <Checkbox id="terms" />
+            <label
+              htmlFor="terms"
+              className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Create account
+            </label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox id="terms" />
+            <label
+              htmlFor="terms"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Configure integrations
+            </label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox id="terms" />
+            <label
+              htmlFor="terms"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Install a bot
+            </label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox id="terms" />
+            <label
+              htmlFor="terms"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Run a bot
+            </label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox id="terms" />
+            <label
+              htmlFor="terms"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Check results in the run log
+            </label>
+          </div>
+        </div>
         <div>
           <div className="mt-auto p-4">
             <Card x-chunk="dashboard-02-chunk-0">
