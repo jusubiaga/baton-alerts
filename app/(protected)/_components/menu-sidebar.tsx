@@ -67,7 +67,7 @@ export default function MenuSidebar() {
         links={[
           {
             title: "Run Log",
-            label: "6",
+            label: "0",
             icon: Activity,
             variant: "default",
             href: "/runlog",
