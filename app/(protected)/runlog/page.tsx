@@ -14,52 +14,74 @@ import { MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
 import { FaUser } from "react-icons/fa";
 import { TbReport } from "react-icons/tb";
+import { getRunLog } from "@/data/runlog";
+import RunLogTable from "./_components/runLogTable";
 
 const DATA = [
   {
-    id: "pj126tej6",
-    stage: "Production",
-    status: "Ready",
-    statusCode: 3,
-    executionAt: "1m 17s (1d ago)",
-    createdAt: "1d ago by jusubiaga",
+    id: "cly697gl3000011j6x4a7k9fr",
+    code: "CUV-0001",
+    createdAt: "2024-07-03T19:51:47.127Z",
+    userId: "clxkkg0rv0000808nz0mdyfei",
+    ruleId: "CUV",
+    status: "OK",
+    errors: "",
+    rule: {
+      id: "CUV",
+      name: "Google - Universal App Campaigns -  Video count checker",
+      description: "This bot goes through applicable UAC Adgroups and makes sure every one of them has 20 videos.",
+      available: true,
+      avatar: "googleAds.png",
+      intregrationTypeId: "1",
+    },
   },
   {
-    id: "b146ted7",
-    stage: "Production",
-    status: "Error",
-    statusCode: 2,
-    executionAt: "17s",
-    createdAt: "1d ago by jusubiaga",
-  },
-  {
-    id: "c222tefr",
-    stage: "Production",
-    status: "Running",
-    statusCode: 1,
-    executionAt: "40s",
-    createdAt: "1d ago by jusubiaga",
+    id: "cly69gwk9000111j64vndf1qm",
+    code: "CUV-0002",
+    createdAt: "2024-07-03T19:59:07.738Z",
+    userId: "clxkkg0rv0000808nz0mdyfei",
+    ruleId: "CUV",
+    status: "NORUN",
+    errors: "",
+    rule: {
+      id: "CUV",
+      name: "Google - Universal App Campaigns -  Video count checker",
+      description: "This bot goes through applicable UAC Adgroups and makes sure every one of them has 20 videos.",
+      available: true,
+      avatar: "googleAds.png",
+      intregrationTypeId: "1",
+    },
   },
 ];
 
 async function RunLog() {
-  // const user = useCurrentUser();
-  return (
-    <div className="flex flex-1 items-center justify-center rounded-lg">
-      <div className="flex flex-col items-center gap-1 text-center">
-        <h3 className="text-2xl font-bold tracking-tight">No runs yet</h3>
+  const runLog = await getRunLog();
+  console.log("RUN LOG", runLog);
 
-        <p className="text-sm text-muted-foreground">You’ll start seeing run logs once you finish your setup.</p>
-        <div className="flex flex-col items-center">
-          <Button className="mt-4 w-full">
-            <Link href="/integrations">Configure Integrations</Link>
-          </Button>
-          <Button className="mt-4 w-full">
-            <Link href="/automations">Install Bots</Link>
-          </Button>
+  return (
+    <>
+      {runLog.length === 0 ? (
+        <div className="flex flex-1 items-center justify-center rounded-lg">
+          <div className="flex flex-col items-center gap-1 text-center">
+            <h3 className="text-2xl font-bold tracking-tight">No runs yet</h3>
+
+            <p className="text-sm text-muted-foreground">You’ll start seeing run logs once you finish your setup.</p>
+            <div className="flex flex-col items-center">
+              <Button className="mt-4 w-full">
+                <Link href="/integrations">Configure Integrations</Link>
+              </Button>
+              <Button className="mt-4 w-full">
+                <Link href="/automations">Install Bots</Link>
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      ) : (
+        <div className="flex p-4 flex-wrap gap-4">
+          <RunLogTable data={runLog}></RunLogTable>
+        </div>
+      )}
+    </>
 
     // <div>
     //   <header className="flex justify-between m-3">

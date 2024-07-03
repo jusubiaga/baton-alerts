@@ -27,7 +27,7 @@ model User {
   twoFactorConfirmation TwoFactorConfirmation?
   catalogs              Catalog[]
   intregrations         Intregration[]
-  runs                  Run[]
+  runLog                RunLog[]
 }
 
 model Account {
@@ -117,7 +117,7 @@ model Rule {
   catalogs           Catalog[]
   intregrationTypeId String
   intregrationType   IntregrationType @relation(fields: [intregrationTypeId], references: [id], onDelete: Cascade)
-  runs               Run[]
+  runLog             RunLog[]
 
   @@unique([id, intregrationTypeId])
 }
@@ -141,17 +141,19 @@ model Catalog {
 
 enum RunStatus {
   NORUN
-  Ok
+  RUNING
+  OK
   ERROR
 }
 
-model Run {
-  id     String   @id @default(cuid())
-  date   DateTime
-  userId String
-  ruleId String
-  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  rule   Rule     @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+model RunLog {
+  id        String   @id @default(cuid())
+  code      String
+  createdAt DateTime @default(now())
+  userId    String
+  ruleId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rule      Rule     @relation(fields: [ruleId], references: [id], onDelete: Cascade)
 
   status RunStatus @default(NORUN)
   errors String

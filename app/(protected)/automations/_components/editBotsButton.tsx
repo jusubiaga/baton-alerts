@@ -29,7 +29,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { updateCatalog } from "@/data/catalogs";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
-import { Pencil } from "lucide-react";
+import { Loader2, Pencil } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { create } from "domain";
+import { createRun } from "@/data/runlog";
+
+export function ButtonLoading() {
+  return (
+    <Button disabled>
+      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      Please wait
+    </Button>
+  );
+}
 
 let FREQUENCY = [
   {
@@ -85,7 +97,9 @@ type SheetDemoProps = {
 };
 
 export function BotEditForm({ buttonLabel, className = "", data }: SheetDemoProps) {
+  const router = useRouter();
   const [frequency, setFrequency] = useState(FREQUENCY);
+  const [isCreateRun, SetIsCreateRun] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -139,9 +153,17 @@ export function BotEditForm({ buttonLabel, className = "", data }: SheetDemoProp
     }
   };
 
-  const handleTest = (event: any) => {
+  const handleRun = async (event: any) => {
     event.preventDefault();
-    console.log("handleTest");
+    console.log("handleRun: ", data);
+    SetIsCreateRun(true);
+    const runlog = await createRun({
+      code: data.ruleId + "-00000",
+      ruleId: data.ruleId,
+    });
+
+    router.push("/runlog");
+    SetIsCreateRun(false);
   };
 
   const handleChange = (event: any, newItem: any) => {
@@ -329,9 +351,13 @@ export function BotEditForm({ buttonLabel, className = "", data }: SheetDemoProp
             </div>
 
             <SheetFooter>
-              <Button variant="secondary" onClick={handleTest}>
-                Run Now
-              </Button>
+              {isCreateRun ? (
+                <ButtonLoading></ButtonLoading>
+              ) : (
+                <Button type="submit" variant="secondary" onClick={handleRun}>
+                  Run Now
+                </Button>
+              )}
               <SheetClose asChild>
                 <Button type="submit">Save changes</Button>
               </SheetClose>
