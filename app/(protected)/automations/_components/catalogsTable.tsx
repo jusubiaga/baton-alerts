@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 import { cn } from "@/lib/utils";
 
-import { MoreHorizontal, Pencil, Search, Trash } from "lucide-react";
+import { MoreHorizontal, Pencil, Play, Search, Trash } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -32,6 +32,8 @@ import {
 import { deleteCatalogById } from "@/data/catalogs";
 import { toast } from "sonner";
 import AddBotsButton from "./addBotsButton";
+import { BotEditForm } from "./editBotsButton";
+import { Description } from "@radix-ui/react-dialog";
 
 // export type Payment = {
 //   id: string;
@@ -101,6 +103,23 @@ export const columns: ColumnDef<any>[] = [
     header: "Next Run",
     cell: ({ row }) => <div className="capitalize">{"nextRun"}</div>,
   },
+  {
+    accessorKey: "edit",
+    header: "Edit",
+    cell: ({ row }) => {
+      const data = {
+        id: row.original.id,
+        avatar: row.original.rule.avatar,
+        name: row.original.rule.name,
+        description: row.original.rule.description,
+        frequency: row.original.frequency,
+        hour: row.original.hour,
+        min: row.original.min,
+        minimumNumber: row.original.min,
+      };
+      return <BotEditForm buttonLabel="Edit" data={data}></BotEditForm>;
+    },
+  },
 
   {
     id: "actions",
@@ -113,26 +132,36 @@ export const columns: ColumnDef<any>[] = [
       };
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <Pencil className="mr-2 h-4 w-4" />
-              <span>Edit</span>
-            </DropdownMenuItem>
-            {/* <DropdownMenuSeparator /> */}
-            <DropdownMenuItem onClick={() => handleDelete(row.original)}>
-              <Trash className="mr-2 h-4 w-4" />
-              <span>Delete</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <Button variant="outline" size="icon" onClick={() => handleDelete(row.original)}>
+            <Trash className="h-4 w-4" />
+          </Button>
+          <Button variant="outline" size="icon">
+            <Play className="h-4 w-4" />
+          </Button>
+        </>
+
+        // <DropdownMenu>
+        //   <DropdownMenuTrigger asChild>
+        //     <Button variant="ghost" className="h-8 w-8 p-0">
+        //       <span className="sr-only">Open menu</span>
+        //       <MoreHorizontal className="h-4 w-4" />
+        //     </Button>
+        //   </DropdownMenuTrigger>
+        //   <DropdownMenuContent align="end">
+        //     <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        //     <DropdownMenuItem>
+        //       <Pencil className="mr-2 h-4 w-4" />
+        //       <BotEditForm buttonLabel="edit"></BotEditForm>
+        //       <span>Edit</span>
+        //     </DropdownMenuItem>
+        //     {/* <DropdownMenuSeparator /> */}
+        //     <DropdownMenuItem onClick={() => handleDelete(row.original)}>
+        //       <Trash className="mr-2 h-4 w-4" />
+        //       <span>Delete</span>
+        //     </DropdownMenuItem>
+        //   </DropdownMenuContent>
+        // </DropdownMenu>
       );
     },
   },

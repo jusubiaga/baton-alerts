@@ -123,13 +123,18 @@ model Rule {
 }
 
 model Catalog {
-  id     String  @id @default(cuid())
-  tags   String?
-  active Boolean
-  userId String
-  ruleId String
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  rule   Rule    @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  id            String  @id @default(cuid())
+  tags          String?
+  active        Boolean
+  hour          Int     @default(0)
+  min           Int     @default(0)
+  frequency     Int     @default(0)
+  postMeridiem  Boolean @default(false)
+  minimumNumber Int     @default(0)
+  userId        String
+  ruleId        String
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rule          Rule    @relation(fields: [ruleId], references: [id], onDelete: Cascade)
 
   @@unique([userId, ruleId])
 }

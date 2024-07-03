@@ -66,24 +66,57 @@ const RULES = [
   },
   {
     id: "GUH",
-    name: "Google Universal Ads Campaign headlines count checker",
-    description: "",
+    name: "Google - Universal App Campaigns -  Headlines count checker",
+    description: "This bot goes through applicable UAC Adgroups and makes sure every one of them has 5 headlines.",
     available: true,
     avatar: "googleAds.png",
     intregrationTypeId: "1",
   },
   {
     id: "GUD",
-    name: "Google Universal Ads Campaign descriptions count checker",
-    description: "",
+    name: "Google - Universal App Campaigns -  Description count checker",
+    description: "This bot goes through applicable UAC Adgroups and makes sure every one of them has 5 descriptions.",
     available: true,
     avatar: "googleAds.png",
     intregrationTypeId: "1",
   },
   {
     id: "GUI",
-    name: "Google Universal Ads Campaign image count checker",
-    description: "",
+    name: "Google - Universal App Campaigns -  Image count checker",
+    description: "This bot goes through applicable UAC Adgroups and makes sure every one of them has 5 images.",
+    available: true,
+    avatar: "googleAds.png",
+    intregrationTypeId: "1",
+  },
+  {
+    id: "CUV",
+    name: "Google - Universal App Campaigns -  Video count checker",
+    description: "This bot goes through applicable UAC Adgroups and makes sure every one of them has 20 videos.",
+    available: true,
+    avatar: "googleAds.png",
+    intregrationTypeId: "1",
+  },
+  {
+    id: "GUS",
+    name: "Google - Universal App Campaigns -  AdGroup Strenght checker",
+    description: "This bot goes through applicable UAC Adgroups and makes sure their strength is not “Poor”",
+    available: true,
+    avatar: "googleAds.png",
+    intregrationTypeId: "1",
+  },
+  {
+    id: "GUP",
+    name: "Google - Universal App Campaigns -  Asset Performance checker",
+    description: "This bot goes through applicable UAC Assets and reports the ones with Low performance",
+    available: true,
+    avatar: "googleAds.png",
+    intregrationTypeId: "1",
+  },
+  {
+    id: "GUN",
+    name: "Google - Universal App Campaigns - Campaign Naming Convention checker",
+    description:
+      "This bot goes through applicable UAC Campaigns and makes sure they comply with the naming convention pre-defined in the settings (regexp match)",
     available: true,
     avatar: "googleAds.png",
     intregrationTypeId: "1",
@@ -102,9 +135,9 @@ async function main() {
     //   ],
     // });
 
-    // await db.IntregrationType.createMany({
-    //   data: INTEGRATION_TYPE,
-    // });
+    await db.IntregrationType.createMany({
+      data: INTEGRATION_TYPE,
+    });
     await db.Rule.createMany({
       data: RULES,
     });

@@ -54,6 +54,22 @@ export const addRuleToCatalog = async (data: Partial<Catalog>) => {
   return null;
 };
 
+export const updateCatalog = async (data: Partial<Catalog>) => {
+  const user = await currentUser();
+
+  if (user) {
+    const catalog = await db.catalog.update({
+      where: { id: data.id },
+      data: data,
+    });
+
+    revalidatePath("/");
+    return catalog;
+  }
+
+  return null;
+};
+
 export const deleteCatalogById = async (id: string) => {
   const user = await currentUser();
 
