@@ -81,10 +81,10 @@ type SheetDemoProps = {
   data: any;
   buttonLabel: string;
   className?: string;
-  onSubmit: (event: any) => void;
+  onSubmit?: (event: any) => void;
 };
 
-export function BotEditForm({ buttonLabel, className = "", data, onSubmit }: SheetDemoProps) {
+export function BotEditForm({ buttonLabel, className = "", data }: SheetDemoProps) {
   const [frequency, setFrequency] = useState(FREQUENCY);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -144,7 +144,7 @@ export function BotEditForm({ buttonLabel, className = "", data, onSubmit }: She
     console.log("handleTest");
   };
 
-  const handleChange = (event: any, newItem) => {
+  const handleChange = (event: any, newItem: any) => {
     // console.log("handleChange", event, newItem);
     // newItem = { ...newItem, selected: event };
 
@@ -167,11 +167,11 @@ export function BotEditForm({ buttonLabel, className = "", data, onSubmit }: She
     form.setValue("frequency", bn);
   };
 
-  const handleFequency = (event) => {
+  const handleFequency = (event: any) => {
     console.log("handleFequency", event);
   };
 
-  const handleFrequencyChange = (event) => {
+  const handleFrequencyChange = (event: any) => {
     console.log("handleFrequencyChange", event);
   };
 
