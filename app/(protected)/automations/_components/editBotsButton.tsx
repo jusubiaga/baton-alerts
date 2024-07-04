@@ -155,6 +155,8 @@ export function BotEditForm({ buttonLabel, className = "", data }: SheetDemoProp
 
   const handleRun = async (event: any) => {
     event.preventDefault();
+    await handleSubmit(form.getValues());
+
     console.log("handleRun: ", data);
     SetIsCreateRun(true);
     const runlog = await createRun({
@@ -354,7 +356,7 @@ export function BotEditForm({ buttonLabel, className = "", data }: SheetDemoProp
               {isCreateRun ? (
                 <ButtonLoading></ButtonLoading>
               ) : (
-                <Button type="submit" variant="secondary" onClick={handleRun}>
+                <Button variant="secondary" onClick={handleRun}>
                   Run Now
                 </Button>
               )}
