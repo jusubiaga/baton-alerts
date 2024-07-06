@@ -1,5 +1,5 @@
 "use server";
-import { getIntegrationType } from "@/app/_utils/globalApi";
+import { getIntegrationType } from "@/lib/globalApi";
 import { currentUser } from "@/lib/auth";
 import db from "@/lib/db";
 import { Catalog } from "@prisma/client";

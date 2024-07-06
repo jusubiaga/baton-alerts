@@ -1,19 +1,12 @@
-import { Separator } from "@/components/ui/separator";
 import { getCatalogs } from "@/data/catalogs";
-import AutomationsTable from "./_components/catalogsTable";
-import AddBotsButton from "./_components/addBotsButton";
+import AutomationsTable from "./_components/bot-table";
+import AddBotsButton from "./_components/addbot-button";
 import { getRules } from "@/data/rules";
 import { Rule } from "@prisma/client";
-import { Button } from "@/components/ui/button";
-import { Play } from "lucide-react";
-import Link from "next/link";
-import { FaGear } from "react-icons/fa6";
-import CatalogTable from "./_components/catalogsTable";
 
 async function Automations() {
   const catalogs = await getCatalogs();
   const rules: Rule[] = await getRules();
-  console.log("CATALOGS: ", catalogs);
 
   return (
     <>
@@ -34,25 +27,6 @@ async function Automations() {
         </div>
       )}
     </>
-
-    // <div>
-    //   <header className="flex justify-between m-3">
-    //     <div className=" flex place-self-center items-center">
-    //       <FaGear className="mr-2 h-4 w-4" />
-    //       <h1 className="scroll-m-20 text-xl font-semibold tracking-tight ">Automations</h1>
-    //     </div>
-    //     <div>
-    //       <AddRule data={rules}></AddRule>
-    //       <Button className="ml-5">
-    //         <Play className="mr-2 h-4 w-4" /> <Link href="/alerts">Run report</Link>
-    //       </Button>
-    //     </div>
-    //   </header>
-    //   <Separator />
-    //   <div className="container">
-    //     <AutomationsTable data={catalogs}></AutomationsTable>
-    //   </div>
-    // </div>
   );
 }
 

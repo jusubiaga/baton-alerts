@@ -1,6 +1,6 @@
-import Container from "./_components/container";
-import { Navbar } from "./_components/navbar";
-import Sidebar from "./_components/sidebar";
+import Container from "@/components/container";
+
+import Sidebar from "@/components/sidebar";
 
 interface ProtectedLayoutProps {
   children: React.ReactNode;

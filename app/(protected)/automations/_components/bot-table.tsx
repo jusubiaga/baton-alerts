@@ -1,12 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
-
-import { cn } from "@/lib/utils";
-
-import { MoreHorizontal, Pencil, Play, Search, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { useState } from "react";
-
-import { formatDistanceToNow, subDays } from "date-fns";
 
 import {
   ColumnDef,
@@ -23,91 +18,92 @@ import {
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { deleteCatalogById } from "@/data/catalogs";
 import { toast } from "sonner";
+import AddBotsButton from "./addbot-button";
+import { BotForm } from "./bot-form";
 
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "id",
     header: "ID",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
+    cell: ({ row }) => <div className="flex items-center gap-2">{row.getValue("id")}</div>,
   },
 
   {
-    accessorKey: "code",
-    id: "code",
-    header: "Run ID",
-
-    cell: ({ row }) => <div className="capitalize">{row.getValue("code")}</div>,
+    accessorKey: "rule.id",
+    id: "ruleId",
+    header: "Bot ID",
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <div className="w-[40px] h-[40px]">
+          <Avatar>
+            <AvatarImage src={row.original.rule.avatar} alt="@cald" />
+            <AvatarFallback>I</AvatarFallback>
+          </Avatar>
+        </div>
+        {row.getValue("ruleId")}
+      </div>
+    ),
   },
   {
     accessorKey: "rule.name",
     id: "ruleName",
-    header: "Bot",
+    header: "Bot name",
     size: 770,
     cell: ({ row }) => <div className="capitalize">{row.getValue("ruleName")}</div>,
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center">
-          <div className="h-4 w-4 border-2 rounded-full border-solid border-gray-300 mr-2 bg-gray-200"></div>
-          <div className="capitalize">{row.getValue("status")}</div>
-        </div>
-      );
-    },
+    accessorKey: "lastRun",
+    header: "Last Run",
+    cell: ({ row }) => <div className="capitalize">{"lastRun"}</div>,
   },
   {
-    accessorKey: "createdAt",
-    header: "Time",
+    accessorKey: "nextRun",
+    header: "Next Run",
+    cell: ({ row }) => <div className="capitalize">{"nextRun"}</div>,
+  },
+  {
+    accessorKey: "edit",
+    header: "Edit",
     cell: ({ row }) => {
-      const result = formatDistanceToNow(new Date(`${row.getValue("createdAt")}`), {
-        addSuffix: true,
-      });
-      return <div className="capitalize">{result}</div>;
+      const data = {
+        id: row.original.id,
+        avatar: row.original.rule.avatar,
+        name: row.original.rule.name,
+        description: row.original.rule.description,
+        frequency: row.original.frequency,
+        hour: row.original.hour,
+        min: row.original.min,
+        minimumNumber: row.original.min,
+        ruleId: row.original.ruleId,
+      };
+      return <BotForm buttonLabel="Edit" data={data}></BotForm>;
     },
   },
 
   {
     id: "actions",
-    header: "Action",
+    header: () => <AddBotsButton className="mt-4 w-full" buttonLabel="Add"></AddBotsButton>,
     cell: ({ row }) => {
+      const handleDelete = async (event: any) => {
+        console.log("handleDelete", event);
+        const del = await deleteCatalogById(event.id);
+        toast("Delete");
+      };
+
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <Pencil className="mr-2 h-4 w-4" />
-              <span>Edit</span>
-            </DropdownMenuItem>
-            {/* <DropdownMenuSeparator /> */}
-            <DropdownMenuItem>
-              <Trash className="mr-2 h-4 w-4" />
-              <span>Delete</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <Button variant="outline" size="icon" onClick={() => handleDelete(row.original)}>
+            <Trash className="h-4 w-4" />
+          </Button>
+        </>
       );
     },
   },
 ];
 
-export default function RunLogTable({ data }: any) {
+export default function BotTable({ data }: any) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({

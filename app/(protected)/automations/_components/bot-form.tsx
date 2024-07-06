@@ -1,10 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
 import { Button } from "@/components/ui/button";
-
 import { z } from "zod";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import {
@@ -21,8 +18,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -31,7 +27,6 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { Loader2, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { create } from "domain";
 import { createRun } from "@/data/runlog";
 
 export function ButtonLoading() {
@@ -89,14 +84,14 @@ const formSchema = z.object({
   PMAM: z.enum(["PM", "AM"]),
 });
 
-type SheetDemoProps = {
+type BotFormProps = {
   data: any;
   buttonLabel: string;
   className?: string;
   onSubmit?: (event: any) => void;
 };
 
-export function BotEditForm({ buttonLabel, className = "", data }: SheetDemoProps) {
+export function BotForm({ buttonLabel, className = "", data }: BotFormProps) {
   const router = useRouter();
   const [frequency, setFrequency] = useState(FREQUENCY);
   const [isCreateRun, SetIsCreateRun] = useState(false);
@@ -113,23 +108,12 @@ export function BotEditForm({ buttonLabel, className = "", data }: SheetDemoProp
   });
 
   useEffect(() => {
-    // const frequencyBinary = Array.from(data?.frequency.toString(2)).reverse();
-
-    // const newFrequency = frequency.map((item, index) => {
-    //   return { ...item, selected: index < frequencyBinary.length ? !!frequencyBinary[index] : false };
-    // });
-
-    // setFrequency(newFrequency);
-
     const frequencyBinary = data?.frequency.toString(2).split("");
     const f = [...["0", "0", "0", "0", "0", "0", "0"], ...frequencyBinary].slice(frequencyBinary.length);
-
-    console.log("useEffect: ", f);
 
     const ff = frequency.map((item, i) => {
       return f[i] === "1" ? { ...item, selected: true } : { ...item, selected: false };
     });
-    console.log("Form", ff);
 
     setFrequency(ff);
   }, []);
@@ -169,18 +153,6 @@ export function BotEditForm({ buttonLabel, className = "", data }: SheetDemoProp
   };
 
   const handleChange = (event: any, newItem: any) => {
-    // console.log("handleChange", event, newItem);
-    // newItem = { ...newItem, selected: event };
-
-    // const r = FREQUENCY.reduce((accumulator, item) => {
-    //   const i = item.id === newItem.id ? newItem : item;
-    //   return i.selected ? accumulator + i.id : accumulator;
-    // }, 0);
-
-    // // setFrequency()
-    // form.setValue("frequency", r);
-    // console.log("handleChange", r);
-
     let bn = 0;
     const f = frequency.map((item) => {
       const i = item.id === newItem.id ? { ...newItem, selected: event } : item;
@@ -204,7 +176,6 @@ export function BotEditForm({ buttonLabel, className = "", data }: SheetDemoProp
       <SheetTrigger asChild>
         <Button className={className} variant="outline" size="icon">
           <Pencil className="h-4 w-4" />
-          {/* {buttonLabel} */}
         </Button>
       </SheetTrigger>
 
@@ -258,16 +229,14 @@ export function BotEditForm({ buttonLabel, className = "", data }: SheetDemoProp
                   />
                   <div className="flex flex-row">
                     {frequency.map((item, i) => (
-                      <>
-                        <div className="flex items-center flex-col mr-4">
-                          <Checkbox
-                            id={i.toString()}
-                            onCheckedChange={(e) => handleChange(e, item)}
-                            checked={item.selected}
-                          />
-                          <label>{item.label}</label>
-                        </div>
-                      </>
+                      <div key={i} className="flex items-center flex-col mr-4">
+                        <Checkbox
+                          id={i.toString()}
+                          onCheckedChange={(e) => handleChange(e, item)}
+                          checked={item.selected}
+                        />
+                        <label>{item.label}</label>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -320,10 +289,7 @@ export function BotEditForm({ buttonLabel, className = "", data }: SheetDemoProp
                     name="PMAM"
                     render={({ field }) => (
                       <FormItem className="flex items-center gap-4">
-                        {/* <FormLabel className="text-left">PM</FormLabel> */}
                         <FormControl>
-                          {/* <Switch checked={field.value} onCheckedChange={field.onChange} /> */}
-                          {/* <Input placeholder="Min" {...field} className="col-span-3" /> */}
                           <RadioGroup
                             onValueChange={field.onChange}
                             defaultValue={field.value}

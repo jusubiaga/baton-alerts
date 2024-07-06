@@ -1,8 +1,5 @@
 import { Button } from "@/components/ui/button";
-
-import { cn } from "@/lib/utils";
-
-import { ArrowUpDown, Search } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import {
@@ -18,7 +15,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getBotAction } from "@/actions/bot";
@@ -155,20 +151,6 @@ export default function BotCatalogTable({ search }: BotCatalogTableProps) {
 
   return (
     <div className="h-[80%]">
-      {/* <div className="w-full flex-1">
-        <form>
-          <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="type to search ..."
-              value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-              onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-              className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
-            />
-          </div>
-        </form>
-      </div> */}
-
       <div className="w-full">
         <div className="rounded-md border">
           <Table>

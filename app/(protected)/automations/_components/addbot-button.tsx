@@ -18,7 +18,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-import BotCatalogTable from "./botCatalogTable";
+import BotCatalogTable from "./bot-catalog-table";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 

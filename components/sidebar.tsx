@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import MenuSidebar from "./menu-sidebar";
-import UserSidebar from "./user-sidebar";
+import HeaderSidebar from "./header-sidebar";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,7 +12,7 @@ export default function Sidebar() {
     <TooltipProvider delayDuration={0}>
       <div className="flex gap-2 flex-col w-[280px] min-w-[280px] border-r min-h-screen">
         <div>
-          <UserSidebar></UserSidebar>
+          <HeaderSidebar></HeaderSidebar>
         </div>
         <div className="grow">
           <MenuSidebar></MenuSidebar>
