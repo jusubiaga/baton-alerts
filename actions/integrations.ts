@@ -2,6 +2,7 @@
 
 import { createIntegration, getIntegrationByType, updateIntegration } from "@/data/integration";
 import { currentUser } from "@/lib/auth";
+import { api } from "@/lib/globalApi";
 import { Intregration } from "@prisma/client";
 
 export const createInegrationAction = async (values: any) => {
@@ -15,12 +16,14 @@ export const createInegrationAction = async (values: any) => {
   }
 
   const newIntegration: Partial<Intregration> = {
-    userId: user.id,
+    user: user.id,
     clientId: values.clientId,
     clientSecret: values.clientSecret,
     campaignPrefix: values.campaignPrefix,
-    intregrationTypeId: values.intregrationTypeId,
+    integrationType: values.intregrationTypeId,
   };
 
-  return await createIntegration(newIntegration);
+  return await api.post("/integration", newIntegration);
+
+  //createIntegration(newIntegration);
 };

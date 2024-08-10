@@ -14,7 +14,7 @@ const axiosClient = axios.create({
 
 const responseBody = (response: AxiosResponse<ResponseData>) => response.data;
 
-const api = {
+export const api = {
   get: <T>(url: string) => axiosClient.get<T>(url).then(responseBody),
   post: <T>(url: string, body: any) => axiosClient.post<T>(url, body).then(responseBody),
   patch: <T>(url: string, body: any) => axiosClient.patch<T>(url, body).then(responseBody),
