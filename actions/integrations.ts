@@ -23,7 +23,24 @@ export const createInegrationAction = async (values: any) => {
     integrationType: values.intregrationTypeId,
   };
 
-  return await api.post("/integration", newIntegration);
+  let rep: string;
+  if (values.id) {
+    rep = await api.patch(`/integration/${values.id}`, newIntegration);
+  } else {
+    rep = await api.post("/integration", newIntegration);
+  }
+
+  return rep;
+  // try {
+  //   const res = await api.post("/integration", newIntegration);
+  //   return res;
+  // } catch (error) {
+  //   console.error(error);
+  //   if (error?.response?.status === 409) {
+  //     const res = await api.patch("/integration", newIntegration);
+  //     return res;
+  //   }
+  // }
 
   //createIntegration(newIntegration);
 };

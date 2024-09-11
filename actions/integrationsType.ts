@@ -6,7 +6,7 @@ import { api } from "@/lib/globalApi";
 
 export const integrationTypeAction = async () => {
   const user = await currentUser();
-  console.log("USR:", user);
+  // console.log("USR:", user);
 
   // console.log("VALUE:", values);
 
@@ -14,7 +14,7 @@ export const integrationTypeAction = async () => {
     return { error: "Unauthorized" };
   }
 
-  const result = await api.get("/integrationType");
+  const result = await api.get(`/integration?user=${user.id}`);
 
   console.log(result);
   return result;

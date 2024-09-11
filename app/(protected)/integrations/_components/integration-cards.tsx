@@ -19,7 +19,8 @@ export function IntegrationCards({ data }: IntegrationCardProps) {
   const handleOnSubmit = async (event: any) => {
     console.log("handleOnSubmit", event);
     const createIntegrationData = {
-      intregrationTypeId: event.id,
+      id: event.id,
+      intregrationTypeId: event.integrationType,
       clientId: event.clientId,
       clientSecret: event.clientSecret,
       campaignPrefix: event.campaignPrefix,
@@ -35,6 +36,7 @@ export function IntegrationCards({ data }: IntegrationCardProps) {
   };
 
   const populateCards = (data: any) => {
+    console.log("POPULATECARDS:", data);
     return (
       <>
         {data.map((item: any) => (
@@ -53,10 +55,7 @@ export function IntegrationCards({ data }: IntegrationCardProps) {
             </CardContent>
 
             <CardFooter className="flex  flex-col justify-end items-start pt-4 pb-0">
-              <p className="text-sm text-muted-foreground">
-                Status: {!!item?.intregrations?.id ? "Configured" : "Not configured"}
-              </p>
-
+              <p className="text-sm text-muted-foreground">Status: {item?.status}</p>
               <IntegrationForm
                 className="mt-4 self-end"
                 buttonLabel="Manage"

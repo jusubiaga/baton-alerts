@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 import { Loader2, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createRun } from "@/data/runlog";
+import CronGenerator from "./CronGenerator";
 
 export function ButtonLoading() {
   return (
@@ -332,6 +333,8 @@ export function BotForm({ buttonLabel, className = "", data }: BotFormProps) {
             </SheetFooter>
           </form>
         </Form>
+
+        <CronGenerator></CronGenerator>
       </SheetContent>
     </Sheet>
   );
