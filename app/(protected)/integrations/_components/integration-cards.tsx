@@ -58,7 +58,7 @@ export function IntegrationCards({ data }: IntegrationCardProps) {
               <p className="text-sm text-muted-foreground">Status: {item?.status}</p>
               <IntegrationForm
                 className="mt-4 self-end"
-                buttonLabel="Manage"
+                buttonLabel={item?.status === "CONFIGURED" ? "Manage" : "Configure"}
                 data={item}
                 onSubmit={handleOnSubmit}
               ></IntegrationForm>

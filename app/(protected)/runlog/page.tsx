@@ -2,9 +2,10 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getRunLog } from "@/data/runlog";
 import RunLogTable from "./_components/runlog-table";
+import { getRunLogAction } from "@/actions/runlog";
 
 async function RunLog() {
-  const runLog = await getRunLog();
+  const runLog = await getRunLogAction();
 
   return (
     <>

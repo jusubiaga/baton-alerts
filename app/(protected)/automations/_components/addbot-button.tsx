@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import BotCatalogTable from "./bot-catalog-table";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { createBotAction } from "@/actions/bot";
 
 type AddBotsButtonProps = {
   buttonLabel: string;
@@ -49,7 +50,7 @@ function AddBotsButton({ buttonLabel = "Add", className = "" }: AddBotsButtonPro
       ruleId: rule?.id,
     };
 
-    const catalog = await addRuleToCatalog(newCatalog);
+    const catalog = await createBotAction(rule?.id);
     console.log("int: ", catalog);
     if (catalog) {
       toast.success("Data Success");

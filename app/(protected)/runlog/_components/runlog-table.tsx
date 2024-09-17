@@ -24,6 +24,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -33,14 +34,14 @@ export const columns: ColumnDef<any>[] = [
   },
 
   {
-    accessorKey: "code",
+    accessorKey: "id",
     id: "code",
     header: "Run ID",
 
     cell: ({ row }) => <div className="capitalize">{row.getValue("code")}</div>,
   },
   {
-    accessorKey: "rule.name",
+    accessorKey: "rule",
     id: "ruleName",
     header: "Bot",
     size: 770,
@@ -106,6 +107,12 @@ export default function RunLogTable({ data }: any) {
     id: false,
   });
   const [rowSelection, setRowSelection] = useState({});
+  const router = useRouter();
+
+  const handleRowClick = (id: string) => {
+    console.log("RunLogTable selected: ", id);
+    router.push(`/runlog/${id}`);
+  };
 
   const table = useReactTable({
     data,
@@ -147,7 +154,11 @@ export default function RunLogTable({ data }: any) {
             <TableBody>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    onClick={() => handleRowClick(row.original?.id)}
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                     ))}
