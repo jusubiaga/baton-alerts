@@ -8,6 +8,9 @@ import { LoginSchema } from "@/schemas";
 import { getUserByEmail } from "@/data/user";
 
 export default {
+  // TODO: protected
+  // trustHost: process.env.NODE_ENV === 'development' || process.env.TRUSTED_HOSTS?.includes(process.env.NEXTAUTH_URL),
+  trustHost: true,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
