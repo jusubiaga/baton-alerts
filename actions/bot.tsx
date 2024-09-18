@@ -1,12 +1,9 @@
 "use server";
 
-import { createIntegration, getIntegrationByType, updateIntegration } from "@/data/integration";
-import { getRules } from "@/data/rules";
 import { currentUser } from "@/lib/auth";
 import { api } from "@/lib/globalApi";
-import { Intregration } from "@prisma/client";
 
-export const createBotAction = async (rule) => {
+export const createBotAction = async (rule: string) => {
   const user = await currentUser();
 
   if (!user) {

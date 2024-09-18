@@ -38,6 +38,7 @@ export async function POST(request: Request) {
     const { tags, active, ruleId } = body;
 
     const catalog = await db.catalog.create({
+      // @ts-ignore
       data: { tags, active, userId: user.id, ruleId },
     });
     // }

@@ -50,7 +50,7 @@ function AddBotsButton({ buttonLabel = "Add", className = "" }: AddBotsButtonPro
       ruleId: rule?.id,
     };
 
-    const catalog = await createBotAction(rule?.id);
+    const catalog = await createBotAction(rule?.id ?? "");
     console.log("int: ", catalog);
     if (catalog) {
       toast.success("Data Success");

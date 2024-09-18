@@ -38,6 +38,7 @@ export const addRuleToCatalog = async (data: Partial<Catalog>) => {
     });
     if (!rule) {
       const catalog = await db.catalog.create({
+        // @ts-ignore
         data: {
           tags: data.tags ?? "",
           active: data.active ?? false,

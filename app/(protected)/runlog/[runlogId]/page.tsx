@@ -1,7 +1,7 @@
 import { getRunLogDetailAction } from "@/actions/runlog";
 import RunLogDetailTable from "../_components/runlogdetail-table";
 
-export default async function RunLogDetail({ params }) {
+export default async function RunLogDetail({ params }: any) {
   const data = await getRunLogDetailAction(params.runlogId);
 
   return (

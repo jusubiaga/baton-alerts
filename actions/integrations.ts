@@ -16,6 +16,7 @@ export const createInegrationAction = async (values: any) => {
   }
 
   const newIntegration: Partial<Intregration> = {
+    // @ts-ignore
     user: user.id,
     clientId: values.clientId,
     clientSecret: values.clientSecret,

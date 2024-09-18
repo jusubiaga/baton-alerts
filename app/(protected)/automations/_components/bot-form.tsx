@@ -175,6 +175,7 @@ export function BotForm({ buttonLabel, className = "", data }: BotFormProps) {
   };
 
   // Genera la expresión cron basada en la selección del usuario
+  // @ts-ignore
   const generateCronExpression = (selectedDays, hours, minutes): string => {
     const cronDaysOfWeek = selectedDays.length > 0 ? selectedDays.join(",") : "*";
     const newCron = `${minutes} ${hours} * * ${cronDaysOfWeek}`;
