@@ -35,9 +35,9 @@ export default function IntegrationForm({ buttonLabel, className = "", data, onS
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      clientId: data?.intregrations?.clientId ?? "",
-      clientSecret: data?.intregrations?.clientSecret ?? "",
-      campaignPrefix: data?.intregrations?.campaignPrefix ?? "",
+      clientId: data?.clientId ?? "",
+      clientSecret: data?.clientSecret ?? "",
+      campaignPrefix: data?.campaignPrefix ?? "",
     },
   });
 

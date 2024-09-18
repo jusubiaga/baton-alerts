@@ -43,6 +43,7 @@ export async function POST(request: Request) {
 
     // if (!intregration) {
     const createIntregration = await db.rule.create({
+      // @ts-ignore
       data: { name, intregrationTypeId },
     });
     // }

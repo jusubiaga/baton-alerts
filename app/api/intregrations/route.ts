@@ -39,6 +39,7 @@ export async function POST(request: Request) {
     const { intregrationTypeId, clientId, clientSecret, campaignPrefix } = body;
 
     const createIntregration = await db.intregration.create({
+      // @ts-ignore
       data: { userId: user.id, intregrationTypeId, clientId, clientSecret, campaignPrefix },
     });
 

@@ -1,8 +1,9 @@
 import { IntegrationCards } from "./_components/integration-cards";
-import { getIntegration } from "@/data/integration";
+// import { getIntegration } from "@/data/integration";
+import { integrationTypeAction } from "@/actions/integrationsType";
 
 async function Integrations() {
-  const data = await getIntegration();
+  const data = await integrationTypeAction();
 
   return (
     <div>

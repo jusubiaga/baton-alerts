@@ -1,6 +1,8 @@
+"use client";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
-import { useEffect, useState } from "react";
+import { MoreHorizontal, Pencil, Play, Search, Trash } from "lucide-react";
+import { useState } from "react";
+import { formatDistanceToNow, subDays } from "date-fns";
 
 import {
   ColumnDef,
@@ -14,114 +16,68 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { createBotAction, getBotAction } from "@/actions/bot";
-import { addRuleToCatalog } from "@/data/catalogs";
-import { toast } from "sonner";
-import { getRulesAction } from "@/actions/rules";
-
-const ActionButton = ({ row }: any) => {
-  const handleInstall = async () => {
-    console.log("handleInstall");
-    const newCatalog = {
-      tags: "",
-      active: true,
-      ruleId: row.original?.id,
-    };
-
-    const catalog = await createBotAction(row.original?.id);
-    console.log("int: ", catalog);
-    if (catalog) {
-      toast.success("Data Success");
-    } else {
-      toast.success("Data Error");
-    }
-  };
-
-  const handleNotifyMe = () => {
-    console.log("handleNotifyMe");
-  };
-
-  return (
-    <>
-      {row.original.available ? (
-        <Button variant="default" onClick={handleInstall}>
-          Install
-        </Button>
-      ) : (
-        <Button variant="outline" onClick={handleNotifyMe}>
-          Notify Me
-        </Button>
-      )}
-    </>
-  );
-};
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "id",
-    header: "Bot ID",
+    header: "Result ID",
+    size: 350,
+    cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
+  },
+
+  {
+    accessorKey: "id",
+    id: "code",
+    header: "Resource Identifier",
+    size: 500,
     cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <div className="w-[40px] h-[40px]">
-          <Avatar>
-            <AvatarImage src={row.original.avatar} alt="@cald" />
-            <AvatarFallback>I</AvatarFallback>
-          </Avatar>
-        </div>
-        {row.getValue("id")}
+      <div className="capitalize">
+        {row.original?.group_id}:{row.original?.group_name}:{row.original?.campagin_id}:{row.original?.campagin_name}
       </div>
     ),
   },
   {
-    accessorKey: "name",
-    header: ({ column }) => {
+    accessorKey: "status",
+    header: "Status",
+    size: 200,
+    cell: ({ row }) => {
       return (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          Bot Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        <div className="flex items-center">
+          <div className="h-4 w-4 border-2 rounded-full border-solid border-gray-300 mr-2 bg-gray-200"></div>
+          <div className="capitalize">
+            {row.original?.diff > 0 ? row.original?.diff : ""} {row.getValue("status")}
+          </div>
+        </div>
       );
     },
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
-  {
-    accessorKey: "available",
-    header: ({ column }) => {
-      return (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-
-    cell: ({ row }) => <div className="capitalize">{row.getValue("available") ? "Available" : "Coming soon"}</div>,
-  },
-  {
-    accessorKey: "action",
-    header: "",
-    cell: ({ row }) => <ActionButton row={row}></ActionButton>,
-  },
+  // {
+  //   accessorKey: "createdAt",
+  //   header: "Time",
+  //   cell: ({ row }) => {
+  //     const result = formatDistanceToNow(new Date(`${row.getValue("createdAt")}`), {
+  //       addSuffix: true,
+  //     });
+  //     return <div className="capitalize">{result}</div>;
+  //   },
+  // },
 ];
 
-type BotCatalogTableProps = {
-  search: string;
-};
-
-export default function BotCatalogTable({ search }: BotCatalogTableProps) {
+export default function RunLogDetailTable({ data }: any) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    id: true,
+  });
   const [rowSelection, setRowSelection] = useState({});
-  const [data, setData] = useState<Array<any>>([]);
-
-  const rulesData = async () => {
-    console.log("rulesData");
-    const bots = await getRulesAction();
-    setData(() => bots as Array<any>);
-  };
 
   const table = useReactTable({
     data,
@@ -142,14 +98,6 @@ export default function BotCatalogTable({ search }: BotCatalogTableProps) {
     },
   });
 
-  useEffect(() => {
-    rulesData();
-  }, []);
-
-  useEffect(() => {
-    table.getColumn("name")?.setFilterValue(search);
-  }, [search]);
-
   return (
     <div className="h-[80%]">
       <div className="w-full">
@@ -160,7 +108,7 @@ export default function BotCatalogTable({ search }: BotCatalogTableProps) {
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id}>
+                      <TableHead key={header.id} style={{ width: header.getSize() }}>
                         {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                       </TableHead>
                     );

@@ -23,6 +23,11 @@ import { toast } from "sonner";
 import AddBotsButton from "./addbot-button";
 import { BotForm } from "./bot-form";
 
+import { format } from "date-fns";
+import { enUS } from "date-fns/locale";
+import { deleteBotAction } from "@/actions/bot";
+import { useRouter } from "next/navigation";
+
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: "id",
@@ -31,14 +36,14 @@ export const columns: ColumnDef<any>[] = [
   },
 
   {
-    accessorKey: "rule.id",
+    accessorKey: "rule",
     id: "ruleId",
     header: "Bot ID",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
         <div className="w-[40px] h-[40px]">
           <Avatar>
-            <AvatarImage src={row.original.rule.avatar} alt="@cald" />
+            <AvatarImage src={row.original?.avatar} alt="@cald" />
             <AvatarFallback>I</AvatarFallback>
           </Avatar>
         </div>
@@ -47,21 +52,33 @@ export const columns: ColumnDef<any>[] = [
     ),
   },
   {
-    accessorKey: "rule.name",
+    accessorKey: "name",
     id: "ruleName",
     header: "Bot name",
     size: 770,
     cell: ({ row }) => <div className="capitalize">{row.getValue("ruleName")}</div>,
   },
   {
-    accessorKey: "lastRun",
+    accessorKey: "lastRunDate",
     header: "Last Run",
-    cell: ({ row }) => <div className="capitalize">{"lastRun"}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.getValue("lastRunDate")
+          ? format(new Date(row.getValue("lastRunDate")), "dd MMM yyyy HH:mm:ss", { locale: enUS })
+          : null}
+      </div>
+    ),
   },
   {
-    accessorKey: "nextRun",
+    accessorKey: "nextRunDate",
     header: "Next Run",
-    cell: ({ row }) => <div className="capitalize">{"nextRun"}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.getValue("nextRunDate")
+          ? format(new Date(row.getValue("nextRunDate")), "dd MMM yyyy HH:mm:ss", { locale: enUS })
+          : null}
+      </div>
+    ),
   },
   {
     accessorKey: "edit",
@@ -69,13 +86,13 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => {
       const data = {
         id: row.original.id,
-        avatar: row.original.rule.avatar,
-        name: row.original.rule.name,
-        description: row.original.rule.description,
+        avatar: row.original.avatar,
+        name: row.original.name,
+        description: row.original.description,
         frequency: row.original.frequency,
         hour: row.original.hour,
         min: row.original.min,
-        minimumNumber: row.original.min,
+        minimumNumber: row.original.minimumNumber,
         ruleId: row.original.ruleId,
       };
       return <BotForm buttonLabel="Edit" data={data}></BotForm>;
@@ -88,7 +105,7 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => {
       const handleDelete = async (event: any) => {
         console.log("handleDelete", event);
-        const del = await deleteCatalogById(event.id);
+        const del = await deleteBotAction(event.id);
         toast("Delete");
       };
 

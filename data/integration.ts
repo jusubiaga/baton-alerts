@@ -47,6 +47,7 @@ export const createIntegration = async (data: Partial<Intregration>) => {
 
   if (!integration) {
     return await db.intregration.create({
+      // @ts-ignore
       data: {
         intregrationTypeId: data.intregrationTypeId ?? "",
         clientId: data.clientId ?? "",
