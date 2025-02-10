@@ -40,7 +40,8 @@ export const columns: ColumnDef<any>[] = [
     size: 500,
     cell: ({ row }) => (
       <div className="capitalize">
-        {row.original?.group_id}:{row.original?.group_name}:{row.original?.campagin_id}:{row.original?.campagin_name}
+        {/* {row.original?.group_id}:{row.original?.group_name}:{row.original?.campagin_id}:{row.original?.campagin_name} */}
+        {row.original?.resource_id}
       </div>
     ),
   },
@@ -51,7 +52,12 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex items-center">
-          <div className="h-4 w-4 border-2 rounded-full border-solid border-gray-300 mr-2 bg-gray-200"></div>
+          {row.original?.diff <= 0 ? (
+            <div className="h-3 w-3 rounded-full mr-2 bg-green-400"></div>
+          ) : (
+            <div className="h-3 w-3 rounded-full mr-2 bg-red-400"></div>
+          )}
+          {/* <div className="h-4 w-4 border-2 rounded-full border-solid border-gray-300 mr-2 bg-gray-200"></div> */}
           <div className="capitalize">
             {row.original?.diff > 0 ? row.original?.diff : ""} {row.getValue("status")}
           </div>

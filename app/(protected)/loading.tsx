@@ -1,7 +1,8 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import Loading from "../../components/loading";
 
 function loading() {
-  return <Loading />;
+  return <div>Loading ...</div>;
 }
 
 export default loading;

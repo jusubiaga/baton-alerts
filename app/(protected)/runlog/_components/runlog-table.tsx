@@ -44,17 +44,32 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: "rule",
     id: "ruleName",
     header: "Bot",
-    size: 770,
+    size: 370,
     cell: ({ row }) => <div className="capitalize">{row.getValue("ruleName")}</div>,
   },
+
   {
     accessorKey: "status",
     header: "Status",
+    size: 470,
     cell: ({ row }) => {
+      const status =
+        row.getValue("status") === "RUNNING"
+          ? "Running"
+          : row.getValue("status") === "NO_FOUND_ISSUES"
+          ? "No issue"
+          : `${row.original?.error} issues`;
       return (
         <div className="flex items-center">
-          <div className="h-4 w-4 border-2 rounded-full border-solid border-gray-300 mr-2 bg-gray-200"></div>
-          <div className="capitalize">{row.getValue("status")}</div>
+          {row.getValue("status") === "RUNNING" ? (
+            <div className="h-3 w-3 rounded-full mr-2 bg-gray-400"></div>
+          ) : row.getValue("status") === "FOUND_ISSUES" ? (
+            <div className="h-3 w-3 rounded-full mr-2 bg-red-400"></div>
+          ) : (
+            <div className="h-3 w-3 rounded-full mr-2 bg-green-400"></div>
+          )}
+
+          <div className="capitalize">{status}</div>
         </div>
       );
     },
@@ -70,34 +85,34 @@ export const columns: ColumnDef<any>[] = [
     },
   },
 
-  {
-    id: "actions",
-    header: "Action",
-    cell: ({ row }) => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <Pencil className="mr-2 h-4 w-4" />
-              <span>Edit</span>
-            </DropdownMenuItem>
-            {/* <DropdownMenuSeparator /> */}
-            <DropdownMenuItem>
-              <Trash className="mr-2 h-4 w-4" />
-              <span>Delete</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
+  // {
+  //   id: "actions",
+  //   header: "Action",
+  //   cell: ({ row }) => {
+  //     return (
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //           <Button variant="ghost" className="h-8 w-8 p-0">
+  //             <span className="sr-only">Open menu</span>
+  //             <MoreHorizontal className="h-4 w-4" />
+  //           </Button>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+  //           <DropdownMenuItem>
+  //             <Pencil className="mr-2 h-4 w-4" />
+  //             <span>Edit</span>
+  //           </DropdownMenuItem>
+  //           {/* <DropdownMenuSeparator /> */}
+  //           <DropdownMenuItem>
+  //             <Trash className="mr-2 h-4 w-4" />
+  //             <span>Delete</span>
+  //           </DropdownMenuItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //     );
+  //   },
+  // },
 ];
 
 export default function RunLogTable({ data }: any) {
@@ -158,6 +173,7 @@ export default function RunLogTable({ data }: any) {
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
                     onClick={() => handleRowClick(row.original?.id)}
+                    className="cursor-pointer hover:bg-gray-50"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>

@@ -1,11 +1,36 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getRunLog } from "@/data/runlog";
 import RunLogTable from "./_components/runlog-table";
 import { getRunLogAction } from "@/actions/runlog";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { TableSkeleton } from "../_components/TableSkeleton";
 
-async function RunLog() {
-  const runLog = await getRunLogAction();
+function RunLog() {
+  // const runLog = await getRunLogAction();
+  const [runLog, setRunLog] = useState([]);
+  const [isLoding, setIsLoding] = useState(true);
+
+  const fetchRunLog = async () => {
+    const logs = await getRunLogAction();
+    setRunLog(logs);
+    setIsLoding(false);
+  };
+
+  useEffect(() => {
+    fetchRunLog();
+
+    const intervalId = setInterval(fetchRunLog, 5000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  if (isLoding) {
+    return <TableSkeleton></TableSkeleton>;
+  }
 
   return (
     <>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import IntegrationForm from "./integration-form";
+import { CardSkeleton } from "./CardSkeleton";
 
 type IntegrationCardProps = {
   data: IntregationData[];
@@ -69,5 +70,5 @@ export function IntegrationCards({ data }: IntegrationCardProps) {
     );
   };
 
-  return <>{!loadings ? populateCards(data) : <div>Spinner</div>}</>;
+  return <>{!loadings ? populateCards(data) : <CardSkeleton></CardSkeleton>}</>;
 }
