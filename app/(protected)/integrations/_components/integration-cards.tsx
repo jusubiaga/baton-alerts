@@ -51,7 +51,7 @@ export function IntegrationCards({ data }: IntegrationCardProps) {
                 <h4 className="">{item.name}</h4>
               </div>
             </CardHeader>
-            <CardContent className="py-4 border-b">
+            <CardContent className="py-4 border-b h-[40%]">
               <p className="text-sm">{item.description}</p>
             </CardContent>
 

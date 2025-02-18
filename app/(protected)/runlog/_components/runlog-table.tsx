@@ -3,6 +3,17 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Pencil, Play, Search, Trash } from "lucide-react";
 import { useState } from "react";
 import { formatDistanceToNow, subDays } from "date-fns";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import RunlogList from "./RunLogList";
 
 import {
   ColumnDef,
@@ -25,6 +36,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
+import { RunlogDetailSheet } from "./RunlogDetailSheet";
+import { getRunLogDetailAction } from "@/actions/runlog";
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -34,11 +47,11 @@ export const columns: ColumnDef<any>[] = [
   },
 
   {
-    accessorKey: "id",
-    id: "code",
+    accessorKey: "idLabel",
+    id: "idLabel",
     header: "Run ID",
 
-    cell: ({ row }) => <div className="capitalize">{row.getValue("code")}</div>,
+    cell: ({ row }) => <div className="capitalize">{row.getValue("idLabel")}</div>,
   },
   {
     accessorKey: "rule",
@@ -84,33 +97,11 @@ export const columns: ColumnDef<any>[] = [
       return <div className="capitalize">{result}</div>;
     },
   },
-
   // {
-  //   id: "actions",
-  //   header: "Action",
+  //   accessorKey: "edit",
+  //   header: "Edit",
   //   cell: ({ row }) => {
-  //     return (
-  //       <DropdownMenu>
-  //         <DropdownMenuTrigger asChild>
-  //           <Button variant="ghost" className="h-8 w-8 p-0">
-  //             <span className="sr-only">Open menu</span>
-  //             <MoreHorizontal className="h-4 w-4" />
-  //           </Button>
-  //         </DropdownMenuTrigger>
-  //         <DropdownMenuContent align="end">
-  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-  //           <DropdownMenuItem>
-  //             <Pencil className="mr-2 h-4 w-4" />
-  //             <span>Edit</span>
-  //           </DropdownMenuItem>
-  //           {/* <DropdownMenuSeparator /> */}
-  //           <DropdownMenuItem>
-  //             <Trash className="mr-2 h-4 w-4" />
-  //             <span>Delete</span>
-  //           </DropdownMenuItem>
-  //         </DropdownMenuContent>
-  //       </DropdownMenu>
-  //     );
+  //     return <RunlogDetailSheet data={row}></RunlogDetailSheet>;
   //   },
   // },
 ];
@@ -122,11 +113,27 @@ export default function RunLogTable({ data }: any) {
     id: false,
   });
   const [rowSelection, setRowSelection] = useState({});
+  const [selectedRow, setSelectedRow] = useState<any | null>(null); // Controlar la fila seleccionada
+  const [isSheetOpen, setIsSheetOpen] = useState(false); // Controlar si el Sheet está abierto
+
   const router = useRouter();
 
-  const handleRowClick = (id: string) => {
-    console.log("RunLogTable selected: ", id);
-    router.push(`/runlog/${id}`);
+  // const handleRowClick = (id: string) => {
+  //   console.log("RunLogTable selected: ", id);
+  //   router.push(`/runlog/${id}`);
+  // };
+
+  // const fetchRunLogDetail = async (id) => {
+  //   const req = await getRunLogDetailAction(id);
+  //   console.log("DETAIL:", req);
+  //   setRunLogDetail(req);
+  // };
+
+  const handleRowClick = async (row: any) => {
+    setSelectedRow(row.original); // Guardar la fila seleccionada
+    setIsSheetOpen(true); // Abrir el Sheet
+    // const r = await fetchRunLogDetail(row?.original?.botId);
+    // setSelectedRow(r);
   };
 
   const table = useReactTable({
@@ -149,67 +156,93 @@ export default function RunLogTable({ data }: any) {
   });
 
   return (
-    <div className="h-[80%]">
-      <div className="w-full">
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead key={header.id} style={{ width: header.getSize() }}>
-                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                    onClick={() => handleRowClick(row.original?.id)}
-                    className="cursor-pointer hover:bg-gray-50"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
+    <>
+      <div className="h-[80%]">
+        <div className="w-full">
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead key={header.id} style={{ width: header.getSize() }}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(header.column.columnDef.header, header.getContext())}
+                        </TableHead>
+                      );
+                    })}
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
-            selected.
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}
+                      // onClick={() => handleRowClick(row.original?.id)}
+                      onClick={() => handleRowClick(row)}
+                      className="cursor-pointer hover:bg-gray-50"
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </div>
-          <div className="space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              Previous
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-              Next
-            </Button>
+          <div className="flex items-center justify-end space-x-2 py-4">
+            <div className="flex-1 text-sm text-muted-foreground">
+              {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
+              selected.
+            </div>
+            <div className="space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                Previous
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+                Next
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* <RunlogDetailSheet
+        isSheetOpen={isSheetOpen}
+        setIsSheetOpen={setIsSheetOpen}
+        data={selectedRow}
+      ></RunlogDetailSheet> */}
+      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <SheetContent className="sm:max-w-[625px]">
+          <SheetHeader>
+            <SheetTitle>Log details ({selectedRow?.idLabel})</SheetTitle>
+            <SheetDescription>
+              {/* <p>BOT ID: {selectedRow?.botId}</p>
+              <p>ID: {selectedRow?.id}</p>
+              <p>Rule: {selectedRow?.rule}</p>
+              <p>Status: {selectedRow?.status}</p> */}
+            </SheetDescription>
+          </SheetHeader>
+          <RunlogList bot={selectedRow}></RunlogList>
+          <SheetFooter></SheetFooter>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
