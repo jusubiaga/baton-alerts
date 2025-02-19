@@ -22,6 +22,7 @@ import BotCatalogTable from "./bot-catalog-table";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { createBotAction } from "@/actions/bot";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type AddBotsButtonProps = {
   buttonLabel: string;
@@ -69,7 +70,7 @@ function AddBotsButton({ buttonLabel = "Add", className = "" }: AddBotsButtonPro
       </Button>
 
       <Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
-        <DialogContent className="max-w-[80%]">
+        <DialogContent className="h-[70%] max-w-[80%]">
           <DialogHeader>
             <DialogTitle>Bots Catalog</DialogTitle>
             <DialogDescription></DialogDescription>

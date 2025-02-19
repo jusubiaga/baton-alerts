@@ -21,6 +21,7 @@ import { createBotAction, getBotAction } from "@/actions/bot";
 import { addRuleToCatalog } from "@/data/catalogs";
 import { toast } from "sonner";
 import { getRulesAction } from "@/actions/rules";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ActionButton = ({ row }: any) => {
   const handleInstall = async () => {
@@ -140,6 +141,12 @@ export default function BotCatalogTable({ search }: BotCatalogTableProps) {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageIndex: 0,
+        pageSize: 5, // Limita las filas a 2 por página
+      },
+    },
   });
 
   useEffect(() => {
@@ -180,7 +187,14 @@ export default function BotCatalogTable({ search }: BotCatalogTableProps) {
               ) : (
                 <TableRow>
                   <TableCell colSpan={columns.length} className="h-24 text-center">
-                    No results.
+                    <div className="space-y-4">
+                      {[...Array(5)].map((_, index) => (
+                        <div key={index} className="flex items-center gap-4 p-2 border-b last:border-none">
+                          <Skeleton className="h-6 w-6 rounded-full" />
+                          <Skeleton className="h-4 w-full" />
+                        </div>
+                      ))}
+                    </div>
                   </TableCell>
                 </TableRow>
               )}
