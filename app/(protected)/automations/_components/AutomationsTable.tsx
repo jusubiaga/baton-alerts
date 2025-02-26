@@ -27,6 +27,32 @@ import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { deleteBotAction } from "@/actions/bot";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { CheckCircle, CircleAlert } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
+type ButtonDeleteBotProps = {
+  id: string;
+};
+const ButtonDeleteBot = ({ id }: ButtonDeleteBotProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleDelete = async (id: string) => {
+    setIsLoading(true);
+    console.log("handleDelete", id);
+    const del = await deleteBotAction(id);
+
+    router.refresh();
+    toast.success("The bot has been removed");
+    // setIsLoading(false);
+  };
+  return (
+    <Button variant="outline" size="icon" onClick={() => handleDelete(id)} disabled={isLoading}>
+      {isLoading ? <Loader2 className="animate-spin" /> : <Trash className="h-4 w-4" />}
+    </Button>
+  );
+};
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -82,7 +108,7 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: "edit",
-    header: "Edit",
+    header: "",
     cell: ({ row }) => {
       const data = {
         id: row.original.id,
@@ -97,30 +123,56 @@ export const columns: ColumnDef<any>[] = [
       };
       return <BotForm buttonLabel="Edit" data={data}></BotForm>;
     },
+    size: 50,
   },
 
   {
     id: "actions",
-    header: () => <AddBotsButton className="mt-4 w-full" buttonLabel="Add"></AddBotsButton>,
+    header: "",
+    // () => <AddBotsButton className="mt-4 w-full" buttonLabel="Add"></AddBotsButton>,
     cell: ({ row }) => {
       const handleDelete = async (event: any) => {
         console.log("handleDelete", event);
         const del = await deleteBotAction(event.id);
+
         toast("Delete");
       };
 
-      return (
-        <>
-          <Button variant="outline" size="icon" onClick={() => handleDelete(row.original)}>
-            <Trash className="h-4 w-4" />
-          </Button>
-        </>
-      );
+      return <ButtonDeleteBot key={row.original.id} id={row.original.id} />;
     },
+    size: 50,
+  },
+
+  {
+    accessorKey: "frequency",
+    header: "",
+    cell: ({ row }) => (
+      <>
+        {row.getValue("frequency") === "" ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost">
+                  <CircleAlert size={24} color="#ef4444" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent
+                side="bottom"
+                align="center"
+                sideOffset={5}
+                className="bg-white text-black border border-gray-300 shadow-md"
+              >
+                <p>Needs to configure.</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : null}
+      </>
+    ),
   },
 ];
 
-export default function BotTable({ data }: any) {
+export default function AutomationsTable({ data }: any) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -150,6 +202,10 @@ export default function BotTable({ data }: any) {
   return (
     <div className="h-[80%]">
       <div className="w-full">
+        <div className="w-full flex justify-end mb-4">
+          <AddBotsButton className="mt-4" buttonLabel="Add Bot"></AddBotsButton>
+        </div>
+
         <div className="rounded-md border">
           <Table>
             <TableHeader>

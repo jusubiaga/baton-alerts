@@ -19,7 +19,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <SessionProvider session={session}>
       <html lang="en">
         <body className={`${inter.className} flex item-start justify-between`}>
-          <Toaster />
+          <Toaster richColors />
           {children}
         </body>
       </html>

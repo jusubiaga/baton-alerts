@@ -1,5 +1,5 @@
 import { getCatalogs } from "@/data/catalogs";
-import AutomationsTable from "./_components/bot-table";
+import AutomationsTable from "./_components/AutomationsTable";
 import AddBotsButton from "./_components/addbot-button";
 import { getRules } from "@/data/rules";
 import { Rule } from "@prisma/client";

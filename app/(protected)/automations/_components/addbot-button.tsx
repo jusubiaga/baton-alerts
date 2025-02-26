@@ -18,7 +18,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-import BotCatalogTable from "./bot-catalog-table";
+import BotCatalogTable from "./BotCatalogTable";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { createBotAction } from "@/actions/bot";
@@ -39,29 +39,29 @@ function AddBotsButton({ buttonLabel = "Add", className = "" }: AddBotsButtonPro
   const handleAddRule = () => {
     setIsOpen(true);
   };
-  const handleSelect = (rule: Rule) => {
-    console.log("RULE: ", rule);
-    setRule(rule);
-  };
+  // const handleSelect = (rule: Rule) => {
+  //   console.log("RULE: ", rule);
+  //   setRule(rule);
+  // };
 
-  const handleSubmit = async () => {
-    const newCatalog = {
-      tags: "",
-      active: true,
-      ruleId: rule?.id,
-    };
+  // const handleSubmit = async () => {
+  //   const newCatalog = {
+  //     tags: "",
+  //     active: true,
+  //     ruleId: rule?.id,
+  //   };
 
-    const catalog = await createBotAction(rule?.id ?? "");
-    console.log("int: ", catalog);
-    if (catalog) {
-      toast.success("Data Success");
-    } else {
-      toast.success("Data Error");
-    }
+  //   const catalog = await createBotAction(rule?.id ?? "");
+  //   console.log("int: ", catalog);
+  //   if (catalog) {
+  //     toast.success("Data Success");
+  //   } else {
+  //     toast.success("Data Error");
+  //   }
 
-    // router.refresh();
-    setIsOpen(false);
-  };
+  //   // router.refresh();
+  //   setIsOpen(false);
+  // };
 
   return (
     <>
