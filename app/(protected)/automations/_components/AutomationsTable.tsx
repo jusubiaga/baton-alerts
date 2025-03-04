@@ -30,29 +30,30 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { CheckCircle, CircleAlert } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import DeleteBotButton from "./DeleteBotButton";
 
-type ButtonDeleteBotProps = {
-  id: string;
-};
-const ButtonDeleteBot = ({ id }: ButtonDeleteBotProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+// type ButtonDeleteBotProps = {
+//   id: string;
+// };
+// const ButtonDeleteBot = ({ id }: ButtonDeleteBotProps) => {
+//   const [isLoading, setIsLoading] = useState(false);
+//   const router = useRouter();
 
-  const handleDelete = async (id: string) => {
-    setIsLoading(true);
-    console.log("handleDelete", id);
-    const del = await deleteBotAction(id);
+//   const handleDelete = async (id: string) => {
+//     setIsLoading(true);
+//     console.log("handleDelete", id);
+//     const del = await deleteBotAction(id);
 
-    router.refresh();
-    toast.success("The bot has been removed");
-    // setIsLoading(false);
-  };
-  return (
-    <Button variant="outline" size="icon" onClick={() => handleDelete(id)} disabled={isLoading}>
-      {isLoading ? <Loader2 className="animate-spin" /> : <Trash className="h-4 w-4" />}
-    </Button>
-  );
-};
+//     router.refresh();
+//     toast.success("The bot has been removed");
+//     // setIsLoading(false);
+//   };
+//   return (
+//     <Button variant="outline" size="icon" onClick={() => handleDelete(id)} disabled={isLoading}>
+//       {isLoading ? <Loader2 className="animate-spin" /> : <Trash className="h-4 w-4" />}
+//     </Button>
+//   );
+// };
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -138,7 +139,7 @@ export const columns: ColumnDef<any>[] = [
         toast("Delete");
       };
 
-      return <ButtonDeleteBot key={row.original.id} id={row.original.id} />;
+      return <DeleteBotButton key={row.original.id} id={row.original.id} />;
     },
     size: 50,
   },
