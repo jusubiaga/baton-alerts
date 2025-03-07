@@ -18,14 +18,14 @@ export default auth((req) => {
   const isApiRoute = nextUrl.pathname.startsWith(apiPrefix);
 
   if (isApiAuthRoute || isApiRoute) {
-    return null;
+    return;
   }
 
   if (isAuthRoute) {
     if (isLoggedIn) {
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
-    return null;
+    return;
   }
 
   if (!isLoggedIn && !isPublicRoute) {
@@ -39,7 +39,7 @@ export default auth((req) => {
     return Response.redirect(new URL(`/auth/login?callbackUrl=${encodedCallbackUrl}`, nextUrl));
   }
 
-  return null;
+  return;
 });
 
 // export function middleware(request: NextRequest) {

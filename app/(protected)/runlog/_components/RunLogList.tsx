@@ -7,34 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CheckCircle, CircleAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const items = [
-  {
-    id: 1,
-    name: "GSH-0003",
-    status: "NOT_FOUND_ISSUES",
-    statusText: "",
-    text: "customers/9469690341/adGroupAdAssetViews/176242349954~728382173882~193438883636~HEADLINE",
-    avatar: "https://i.pravatar.cc/150?img=1",
-  },
-  {
-    id: 2,
-    name: "GSH-0003",
-    status: "FOUND_ISSUES",
-    statusText: "7 missing headline",
-    text: "customers/9469690341/adGroupAdAssetViews/176242349954~728382173882~193438883636~HEADLINE",
-    avatar: "https://i.pravatar.cc/150?img=2",
-  },
-  {
-    id: 3,
-    name: "Carlos López",
-    status: "FOUND_ISSUES",
-    statusText: "10 missing headline",
-    text: "Pendiente de aprobación",
-    avatar: "https://i.pravatar.cc/150?img=3",
-  },
-];
-
-const statusColors = {
+const statusColors: any = {
   NO_FOUND_ISSUES: "bg-green-500",
   FOUND_ISSUES: "bg-red-500",
 };
@@ -84,12 +57,8 @@ export default function RunlogList({ bot }: RunlogListProps) {
 
   return (
     <div className="space-y-4 p-4  w-full h-[95%] overflow-y-auto">
-      {runLogDetail.map((item, index) => (
+      {runLogDetail.map((item: any, index) => (
         <div key={index} className="flex items-center gap-4 p-2 border-b last:border-none">
-          {/* <Avatar>
-            <AvatarImage src={item.avatar} alt={item.name} />
-            <AvatarFallback>{item.name[0]}</AvatarFallback>
-          </Avatar> */}
           {item.status === "NO_FOUND_ISSUES" ? (
             <CheckCircle size={24} color="#22c55e" />
           ) : (

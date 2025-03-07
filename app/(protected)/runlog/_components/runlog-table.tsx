@@ -36,7 +36,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-import { RunlogDetailSheet } from "./RunlogDetailSheet";
+// import { RunlogDetailSheet } from "./RunlogDetailSheet";
 import { getRunLogDetailAction } from "@/actions/runlog";
 
 export const columns: ColumnDef<any>[] = [
