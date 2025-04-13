@@ -197,9 +197,9 @@ export function BotForm({ buttonLabel, className = "", data }: BotFormProps) {
     // };
     const bot = await updateBotAction(data.id, { frequency: cron, minimumNumber: event.minNumber });
     if (bot) {
-      toast.success("data.success");
+      toast.success("Bot successfully updated");
     } else {
-      toast.error("data.error");
+      toast.error("Error updating bot");
     }
     router.refresh();
   };
