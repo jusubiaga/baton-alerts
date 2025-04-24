@@ -19,7 +19,7 @@ export default function DeleteBotButton({ id }: DeleteBotButtonProps) {
     const del = await deleteBotAction(id);
 
     router.refresh();
-    toast.success("The bot has been removed");
+    toast.success("Bot removed successfully");
     // setIsLoading(false);
   };
   return (
