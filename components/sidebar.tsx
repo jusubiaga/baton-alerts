@@ -43,7 +43,7 @@ export default function Sidebar() {
               htmlFor="terms"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              <a href="/automations">Install a bot</a>
+              <a href="/automations" >Install a bot</a>
             </label>
           </div>
           <div className="flex items-center space-x-2">
