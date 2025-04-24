@@ -20,7 +20,7 @@ export default function Sidebar() {
         <div className="p-4 flex flex-col gap-2">
           <p className="text-sm font-semibold py-2">Setup Guide</p>
           <div className="flex items-center space-x-2">
-            <Checkbox id="terms" />
+            <Checkbox id="terms" checked={true} />
             <label
               htmlFor="terms"
               className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -34,7 +34,7 @@ export default function Sidebar() {
               htmlFor="terms"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              Configure integrations
+              <a href="/integrations">Configure integrations</a>
             </label>
           </div>
           <div className="flex items-center space-x-2">
@@ -43,7 +43,7 @@ export default function Sidebar() {
               htmlFor="terms"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              Install a bot
+              <a href="/automations">Install a bot</a>
             </label>
           </div>
           <div className="flex items-center space-x-2">
@@ -52,7 +52,7 @@ export default function Sidebar() {
               htmlFor="terms"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              Run a bot
+              <a href="/automations">Run a bot</a>
             </label>
           </div>
           <div className="flex items-center space-x-2">
@@ -61,7 +61,7 @@ export default function Sidebar() {
               htmlFor="terms"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              Check results in the run log
+              <a href="/runlog">Check results in the run log</a>
             </label>
           </div>
         </div>
