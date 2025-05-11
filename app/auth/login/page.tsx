@@ -1,4 +1,5 @@
 import { LoginForm } from "@/components/auth/login-form";
+import InteractiveImage from "@/components/InteractiveImage";
 
 const LoginPage = () => {
   return (
@@ -7,8 +8,8 @@ const LoginPage = () => {
         <LoginForm />
       </div>
       <div className="hidden md:block w-[60%] h-full relative">
-        <img
-          src="/cald-starry-night.jpg"
+        <InteractiveImage
+          src="/login-screen/cald-starry-night.jpg"
           alt="Starry Night"
           className="object-cover w-full h-full"
         />
