@@ -7,7 +7,7 @@ import RunLogTable from "./_components/runlog-table";
 import { getRunLogAction } from "@/actions/runlog";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TableSkeleton } from "../_components/TableSkeleton";
+import { TableSkeleton } from "../../_components/TableSkeleton";
 
 function RunLog() {
   // const runLog = await getRunLogAction();
