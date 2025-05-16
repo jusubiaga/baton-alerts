@@ -35,55 +35,57 @@ const WorkspacePage = () => {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentWorkspace, setCurrentWorkspace] = useState<Workspace | null>(null);
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
 
-  const workspaceData: Workspace[] = [
-    {
-      id: 1,
-      name: "Taxfix - Prod",
-      description:
-        "Taxfix Production Account, don't make changes without verifying with the Paid Acquisition team or Maestro's PM. Talk to Evgenii for access.",
-      icon: "/images/taxfix.png",
-      workspaceMembers: "jus@gmail.com",
-      integrationsCount: 8,
-      botsCount: 14,
-    },
-    {
-      id: 2,
-      name: "Taxfix - Sandbox",
-      description: "Taxfix Sandbox Account, feel free to mess around. Integrations get deleted every week.",
-      icon: "/images/taxfix.png",
-      workspaceMembers: "jus@gmail.com",
-      integrationsCount: 18,
-      botsCount: 140,
-    },
-    {
-      id: 3,
-      name: "Steuerbot - Prod",
-      description: "Steuerbot production workspace, talk to Marc L for access.",
-      icon: "/images/steuerbot.png",
-      workspaceMembers: "jus@gmail.com",
-      integrationsCount: 8,
-      botsCount: 14,
-    },
-    {
-      id: 4,
-      name: "TaxScouts - UK",
-      description: "TS Prod, talk to Oli for access.",
-      icon: "/images/taxscouts.png",
-      workspaceMembers: "jus@gmail.com",
-      integrationsCount: 8,
-      botsCount: 14,
-    },
-    {
-      id: 5,
-      name: "Taxscouts - ES",
-      description: "TS Prod Spain, talk to Miguel for access.",
-      icon: "/images/taxscouts.png",
-      workspaceMembers: "jus@gmail.com",
-      integrationsCount: 8,
-      botsCount: 14,
-    },
-  ];
+  // const workspaceData: Workspace[] = [];
+  // [
+  //   {
+  //     id: 1,
+  //     name: "Taxfix - Prod",
+  //     description:
+  //       "Taxfix Production Account, don't make changes without verifying with the Paid Acquisition team or Maestro's PM. Talk to Evgenii for access.",
+  //     icon: "/images/taxfix.png",
+  //     workspaceMembers: "jus@gmail.com",
+  //     integrationsCount: 8,
+  //     botsCount: 14,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Taxfix - Sandbox",
+  //     description: "Taxfix Sandbox Account, feel free to mess around. Integrations get deleted every week.",
+  //     icon: "/images/taxfix.png",
+  //     workspaceMembers: "jus@gmail.com",
+  //     integrationsCount: 18,
+  //     botsCount: 140,
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Steuerbot - Prod",
+  //     description: "Steuerbot production workspace, talk to Marc L for access.",
+  //     icon: "/images/steuerbot.png",
+  //     workspaceMembers: "jus@gmail.com",
+  //     integrationsCount: 8,
+  //     botsCount: 14,
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "TaxScouts - UK",
+  //     description: "TS Prod, talk to Oli for access.",
+  //     icon: "/images/taxscouts.png",
+  //     workspaceMembers: "jus@gmail.com",
+  //     integrationsCount: 8,
+  //     botsCount: 14,
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Taxscouts - ES",
+  //     description: "TS Prod Spain, talk to Miguel for access.",
+  //     icon: "/images/taxscouts.png",
+  //     workspaceMembers: "jus@gmail.com",
+  //     integrationsCount: 8,
+  //     botsCount: 14,
+  //   },
+  // ];
 
   const handleNewWorkspaceClick = () => {
     setCurrentWorkspace({
@@ -107,6 +109,9 @@ const WorkspacePage = () => {
   };
 
   const handleSaveWorkspace = () => {
+    // console.log("handleSaveWorkspace", event);
+    setWorkspaces((workspaces) => [...workspaces, currentWorkspace!]);
+    // setWorkspaces((workspaces) => [...workspaces, event as Workspace]);
     // TODO: Implement save logic (create new or update existing)
     console.log("Saving workspace:", currentWorkspace);
     setIsDialogOpen(false);
@@ -117,14 +122,16 @@ const WorkspacePage = () => {
       <div className="flex flex-col items-center gap-2 mb-8 text-center">
         <h3 className="text-3xl font-semibold">Welcome, Lucas!</h3>
         <p className="text-sm text-muted-foreground">
-          Create a new workspace or an existing one from the gallery below.
+          {workspaces.length === 0
+            ? "Let’s create your first workspace"
+            : "Create a new workspace or an existing one from the gallery below."}
         </p>
         <Button onClick={handleNewWorkspaceClick} className="mt-4">
           New Workspace
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-5xl">
-        {workspaceData.map((workspace) => (
+        {workspaces.map((workspace) => (
           <Card key={workspace.id} className="flex flex-col">
             <CardHeader className="flex flex-row items-center gap-4 pb-2">
               <Avatar>
@@ -139,8 +146,8 @@ const WorkspacePage = () => {
             <CardContent className="flex-grow py-4 text-sm text-muted-foreground">{workspace.description}</CardContent>
             <Separator />
             <CardContent className="py-4">
-              <p className="text-sm text-muted-foreground">{workspace.integrationsCount} Integrations</p>
-              <p className="text-sm text-muted-foreground">{workspace.botsCount} Bots configured</p>
+              <p className="text-xs text-muted-foreground">{workspace.integrationsCount} Integrations</p>
+              <p className="text-xs text-muted-foreground">{workspace.botsCount} Bots configured</p>
             </CardContent>
             <CardFooter className="flex justify-end gap-2 pt-2">
               <Button variant="outline" size="sm" onClick={() => handleSetupClick(workspace)}>
