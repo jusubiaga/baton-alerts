@@ -1,17 +1,13 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
-
-const Redirect = ({ href }: { href: string }) => {
-  redirect(href);
-  return null;
-};
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 export default async function Home() {
   const session = await auth();
   if (session) {
     // Redirect logged in users to the app
-    return <Redirect href="/runlog" />;
+    redirect(DEFAULT_LOGIN_REDIRECT);
   }
   // Redirect unauthenticated users to login
-  return <Redirect href="/auth/login" />;
+  redirect("/auth/login");
 }
