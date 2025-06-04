@@ -93,11 +93,10 @@ const ActionButton = ({ workspace, row, onUpdate }: { workspace: string; row: an
 };
 
 type BotCatalogTableProps = {
-  params: { id: string };
   search: string;
 };
 
-export default function BotCatalogTable({ search, params }: BotCatalogTableProps) {
+export default function BotCatalogTable({ search }: BotCatalogTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
