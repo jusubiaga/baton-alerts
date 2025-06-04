@@ -31,17 +31,18 @@ import {
 import { fi } from "date-fns/locale";
 import { toast } from "sonner";
 import { CardSkeleton } from "./_components/CardSkeleton";
+import { Workspace } from "./_models/models";
 
-interface Workspace {
-  id?: string;
-  name: string;
-  description: string;
-  icon: string;
-  user: string;
-  workspaceMembers: string;
-  integrationsCount: number;
-  botsCount: number;
-}
+// interface Workspace {
+//   id?: string;
+//   name: string;
+//   description: string;
+//   icon: string;
+//   user: string;
+//   workspaceMembers: string;
+//   integrationsCount: number;
+//   botsCount: number;
+// }
 
 const WorkspacePage = () => {
   const router = useRouter();
@@ -83,8 +84,8 @@ const WorkspacePage = () => {
     setIsDialogOpen(true);
   };
 
-  const handleOpenClick = () => {
-    router.push("/runlog");
+  const handleOpenClick = (workspace: Workspace) => {
+    router.push(`/workspace/${workspace?.id}/runlog`);
   };
 
   const handleSaveWorkspace = async () => {
@@ -200,7 +201,7 @@ const WorkspacePage = () => {
                 <Button variant="outline" size="sm" onClick={() => handleSetupClick(workspace)}>
                   Setup
                 </Button>
-                <Button size="sm" onClick={handleOpenClick}>
+                <Button size="sm" onClick={() => handleOpenClick(workspace)}>
                   Open
                 </Button>
               </CardFooter>

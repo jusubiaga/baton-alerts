@@ -7,26 +7,28 @@ import RunLogTable from "./_components/runlog-table";
 import { getRunLogAction } from "@/actions/runlog";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TableSkeleton } from "../../_components/TableSkeleton";
+import { TableSkeleton } from "../../../../../_components/TableSkeleton";
+import { useWorkspace } from "../workspaceProvider";
 
 function RunLog() {
   // const runLog = await getRunLogAction();
   const [runLog, setRunLog] = useState([]);
   const [isLoding, setIsLoding] = useState(true);
+  const { workspaceId } = useWorkspace();
 
-  const fetchRunLog = async () => {
-    const logs = await getRunLogAction();
+  const fetchRunLog = async (workspace: string) => {
+    const logs = await getRunLogAction(workspace);
     setRunLog(logs);
     setIsLoding(false);
   };
 
   useEffect(() => {
-    fetchRunLog();
+    fetchRunLog(workspaceId ?? "");
 
-    const intervalId = setInterval(fetchRunLog, 5000);
+    const intervalId = setInterval(() => fetchRunLog(workspaceId ?? ""), 5000);
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [workspaceId]);
 
   if (isLoding) {
     return <TableSkeleton></TableSkeleton>;

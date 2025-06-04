@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -23,6 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useWorkspace } from "../../workspaceProvider";
 
 enum InstaledStutus {
   "INSTALL" = "Install",
@@ -31,19 +33,22 @@ enum InstaledStutus {
   "ERROR" = "Error",
 }
 
-const ActionButton = ({ row, onUpdate }: { row: any; onUpdate: () => void }) => {
+const ActionButton = ({ workspace, row, onUpdate }: { workspace: string; row: any; onUpdate: () => void }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [installLabel, setInstallLabel] = useState(
     row.original.installed ? InstaledStutus.INSTALLED : InstaledStutus.INSTALL
   );
 
+  const { workspaceId } = useWorkspace();
+
   const handleInstall = async () => {
     console.log("handleInstall");
 
     setIsLoading(true);
     setInstallLabel(InstaledStutus.INSTALING);
-    const catalog = await createBotAction(row.original?.id);
+
+    const catalog = await createBotAction(workspace, row.original?.id);
     console.log("int: ", catalog);
     if (catalog) {
       toast.success("Bot Installed");
@@ -88,10 +93,11 @@ const ActionButton = ({ row, onUpdate }: { row: any; onUpdate: () => void }) => 
 };
 
 type BotCatalogTableProps = {
+  params: { id: string };
   search: string;
 };
 
-export default function BotCatalogTable({ search }: BotCatalogTableProps) {
+export default function BotCatalogTable({ search, params }: BotCatalogTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -99,6 +105,8 @@ export default function BotCatalogTable({ search }: BotCatalogTableProps) {
   const [data, setData] = useState<Array<any>>([]);
 
   const [loading, setLoading] = useState(true);
+
+  const { workspaceId } = useWorkspace();
 
   const columns: ColumnDef<any>[] = [
     {
@@ -132,15 +140,23 @@ export default function BotCatalogTable({ search }: BotCatalogTableProps) {
       accessorKey: "action",
       header: "",
       cell: ({ row }) => {
-        return <ActionButton key={row.original.id} row={row} onUpdate={() => rulesData()}></ActionButton>;
+        return (
+          <ActionButton
+            key={row.original.id}
+            workspace={workspaceId ?? ""}
+            row={row}
+            onUpdate={() => rulesData(workspaceId ?? "")}
+          ></ActionButton>
+        );
       },
     },
   ];
 
-  const rulesData = async () => {
+  const rulesData = async (workspace: string) => {
+    console.log("WORKSPACE: ", workspace);
     setLoading(true); // Activa el estado de carga
     try {
-      const bots = await getRulesAction();
+      const bots = await getRulesAction(workspace);
       setData(bots);
     } catch (error) {
       console.error("Error fetching data", error);
@@ -168,8 +184,8 @@ export default function BotCatalogTable({ search }: BotCatalogTableProps) {
   });
 
   useEffect(() => {
-    rulesData();
-  }, []);
+    rulesData(workspaceId ?? "");
+  }, [workspaceId]);
 
   useEffect(() => {
     table.getColumn("name")?.setFilterValue(search);

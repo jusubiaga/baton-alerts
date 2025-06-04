@@ -6,8 +6,10 @@ import HeaderSidebar from "./header-sidebar";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useWorkspace } from "@/app/(protected)/(workspace)/workspace/[id]/(automations)/workspaceProvider";
 
 export default function Sidebar() {
+  const workspaceId = useWorkspace().workspaceId;
   return (
     <TooltipProvider delayDuration={0}>
       <div className="flex gap-2 flex-col w-[280px] min-w-[280px] border-r min-h-screen">
@@ -34,7 +36,7 @@ export default function Sidebar() {
               htmlFor="terms"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              <a href="/integrations">Configure integrations</a>
+              <a href={`/workspace/${workspaceId}/integrations`}>Configure integrations</a>
             </label>
           </div>
           <div className="flex items-center space-x-2">
@@ -43,7 +45,7 @@ export default function Sidebar() {
               htmlFor="terms"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              <a href="/automations" >Install a bot</a>
+              <a href={`/workspace/${workspaceId}/automations`}>Install a bot</a>
             </label>
           </div>
           <div className="flex items-center space-x-2">
@@ -52,7 +54,7 @@ export default function Sidebar() {
               htmlFor="terms"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              <a href="/automations">Run a bot</a>
+              <a href={`/workspace/${workspaceId}/automations`}>Run a bot</a>
             </label>
           </div>
           <div className="flex items-center space-x-2">
@@ -61,7 +63,7 @@ export default function Sidebar() {
               htmlFor="terms"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              <a href="/runlog">Check results in the run log</a>
+              <a href={`/workspace/${workspaceId}/runlog`}>Check results in the run log</a>
             </label>
           </div>
         </div>

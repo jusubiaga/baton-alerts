@@ -29,7 +29,6 @@ import { Loader2, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createRun } from "@/data/runlog";
 import CronGenerator from "./CronGenerator";
-import { runBotAction, updateBotAction } from "@/actions/bot";
 
 export function ButtonLoading() {
   return (
@@ -39,22 +38,6 @@ export function ButtonLoading() {
     </Button>
   );
 }
-
-// Tipos para los días de la semana
-type DayOfWeek = {
-  label: string;
-  value: string;
-};
-
-const daysOfWeek: DayOfWeek[] = [
-  { label: "L", value: "1" },
-  { label: "T", value: "2" },
-  { label: "W", value: "3" },
-  { label: "T", value: "4" },
-  { label: "F", value: "5" },
-  { label: "S", value: "6" },
-  { label: "S", value: "0" }, // En cron, domingo es 0
-];
 
 let FREQUENCY = [
   {
@@ -95,7 +78,7 @@ let FREQUENCY = [
 ];
 const formSchema = z.object({
   minNumber: z.coerce.number(),
-  frequency: z.string(),
+  frequency: z.coerce.number(),
   hour: z.coerce.number(),
   min: z.coerce.number(),
 
@@ -113,123 +96,73 @@ export function BotForm({ buttonLabel, className = "", data }: BotFormProps) {
   const router = useRouter();
   const [frequency, setFrequency] = useState(FREQUENCY);
   const [isCreateRun, SetIsCreateRun] = useState(false);
-
-  const [selectedDays, setSelectedDays] = useState<string[]>([]);
-  const [startTime, setStartTime] = useState<string>("00:00");
-  const [cronExpression, setCronExpression] = useState<string>("* * * * *");
-  const [inputCron, setInputCron] = useState<string>("");
+  const { workspaceId } = useWorkspace();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       minNumber: data?.minimumNumber ?? 0,
-      frequency: data?.frequency,
-      hour: data?.hour ?? 0 > 12 ? data?.hour - 12 : data?.hour ?? 0,
+      frequency: data?.frequency ?? 0,
+      hour: data?.hour ?? 0,
       min: data?.min ?? 0,
-      PMAM: data?.hour > 12 ? "PM" : "AM",
+      PMAM: data?.postMeridiem ? "PM" : "AM",
     },
   });
 
-  const {
-    setValue,
-    formState: { errors },
-  } = form;
-
   useEffect(() => {
-    console.log("BotForm: DATA: ", data);
-    populateFromCronInput(data.frequency);
+    const frequencyBinary = data?.frequency.toString(2).split("");
+    const f = [...["0", "0", "0", "0", "0", "0", "0"], ...frequencyBinary].slice(frequencyBinary.length);
+
+    const ff = frequency.map((item, i) => {
+      return f[i] === "1" ? { ...item, selected: true } : { ...item, selected: false };
+    });
+
+    setFrequency(ff);
   }, []);
-
-  // Maneja la selección de días
-  const handleDayToggle = (dayValue: string): void => {
-    setSelectedDays((prevState) =>
-      prevState.includes(dayValue) ? prevState.filter((day) => day !== dayValue) : [...prevState, dayValue]
-    );
-  };
-
-  // Parsear la expresión cron introducida por el usuario
-  const populateFromCronInput = (frequency: string): void => {
-    if (!frequency) {
-      return;
-    }
-
-    try {
-      const [cronMinutes, cronHours, , , cronDaysOfWeek] = frequency.split(" ");
-
-      // Actualiza la hora de inicio
-      setStartTime(`${cronHours.padStart(2, "0")}:${cronMinutes.padStart(2, "0")}`);
-
-      setValue("hour", parseInt(cronHours));
-      setValue("min", parseInt(cronMinutes));
-      // setValue("PMAM", parseInt(cronHours) > 12 ? "PM" : "AM");
-
-      // Actualiza los días seleccionados
-      if (cronDaysOfWeek === "*") {
-        setSelectedDays([]);
-      } else {
-        setSelectedDays(cronDaysOfWeek.split(","));
-      }
-    } catch (error) {
-      alert("Expresión cron inválida");
-    }
-  };
-
-  // Genera la expresión cron basada en la selección del usuario
-  // @ts-ignore
-  const generateCronExpression = (selectedDays, hours, minutes): string => {
-    const cronDaysOfWeek = selectedDays.length > 0 ? selectedDays.join(",") : "*";
-    const newCron = `${minutes} ${hours} * * ${cronDaysOfWeek}`;
-    return newCron;
-  };
 
   const handleSubmit = async (event: any) => {
     console.log("handleSubmit", event);
-    const cron = generateCronExpression(selectedDays, event.PMAM === "PM" ? event.hour + 12 : event.hour, event.min);
-    console.log("generateCronExpression:", cron);
-    // console.log("handleSubmit", data);
-    // const d = {
-    //   id: data.id,
-    //   hour: event.hour,
-    //   min: event.min,
-    //   frequency: event.frequency,
-    //   postMeridiem: event.PMAM === "PM" ? true : false,
-    //   minimumNumber: event.minNumber,
-    // };
-    const bot = await updateBotAction(data.id, { frequency: cron, minimumNumber: event.minNumber });
-    if (bot) {
-      toast.success("Bot successfully updated");
+    console.log("handleSubmit", data);
+    const d = {
+      id: data.id,
+      hour: event.hour,
+      min: event.min,
+      frequency: event.frequency,
+      postMeridiem: event.PMAM === "PM" ? true : false,
+      minimumNumber: event.minNumber,
+    };
+    const catalog = await updateCatalog(d);
+    if (catalog) {
+      toast.success("data.success");
     } else {
-      toast.error("Error updating bot");
+      toast.error("data.error");
     }
-    router.refresh();
   };
 
   const handleRun = async (event: any) => {
     event.preventDefault();
-    SetIsCreateRun(true);
     await handleSubmit(form.getValues());
 
     console.log("handleRun: ", data);
-    // SetIsCreateRun(true);
-    // const runlog = await createRun({
-    //   code: data.ruleId + "-00000",
-    //   ruleId: data.ruleId,
-    // });
+    SetIsCreateRun(true);
+    const runlog = await createRun({
+      code: data.ruleId + "-00000",
+      ruleId: data.ruleId,
+    });
 
-    await runBotAction(data.id);
-    router.push("/runlog");
+    router.push(`/${workspaceId}/runlog`);
     SetIsCreateRun(false);
   };
 
   const handleChange = (event: any, newItem: any) => {
-    // let bn = 0;
-    // const f = frequency.map((item) => {
-    //   const i = item.id === newItem.id ? { ...newItem, selected: event } : item;
-    //   bn += i.selected ? i.id : 0;
-    //   return i;
-    // });
-    // setFrequency(f);
-    // form.setValue("frequency", bn);
+    let bn = 0;
+    const f = frequency.map((item) => {
+      const i = item.id === newItem.id ? { ...newItem, selected: event } : item;
+      bn += i.selected ? i.id : 0;
+      return i;
+    });
+    setFrequency(f);
+    form.setValue("frequency", bn);
   };
 
   const handleFequency = (event: any) => {
@@ -297,17 +230,13 @@ export function BotForm({ buttonLabel, className = "", data }: BotFormProps) {
                     )}
                   />
                   <div className="flex flex-row">
-                    {daysOfWeek.map((item, i) => (
+                    {frequency.map((item, i) => (
                       <div key={i} className="flex items-center flex-col mr-4">
                         <Checkbox
-                          checked={selectedDays.includes(item.value)}
-                          onCheckedChange={() => handleDayToggle(item.value)}
-                        />
-                        {/* <Checkbox
                           id={i.toString()}
                           onCheckedChange={(e) => handleChange(e, item)}
                           checked={item.selected}
-                        /> */}
+                        />
                         <label>{item.label}</label>
                       </div>
                     ))}
@@ -405,6 +334,8 @@ export function BotForm({ buttonLabel, className = "", data }: BotFormProps) {
             </SheetFooter>
           </form>
         </Form>
+
+        <CronGenerator></CronGenerator>
       </SheetContent>
     </Sheet>
   );
