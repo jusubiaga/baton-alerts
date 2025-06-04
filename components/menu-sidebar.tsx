@@ -1,3 +1,4 @@
+import { useWorkspace } from "@/app/(protected)/(workspace)/workspace/[id]/(automations)/workspaceProvider";
 import { Nav } from "@/components/nav";
 
 import { Activity, BarChart3, Bot, Puzzle } from "lucide-react";
@@ -5,7 +6,9 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 export default function MenuSidebar() {
-  const pathname = usePathname();
+  // const pathname = useNavigation();
+  const workspaceId = useWorkspace().workspaceId;
+
   const [isCollapsed, setIsCollapsed] = useState(false);
   return (
     <div>
@@ -17,31 +20,34 @@ export default function MenuSidebar() {
             label: "",
             icon: Activity,
             variant: "default",
-            href: "/runlog",
+            href: `/workspace/${workspaceId}/runlog`,
           },
           {
             title: "Bots",
             label: "",
             icon: Bot,
             variant: "ghost",
-            href: "/automations",
+            href: `/workspace/${workspaceId}/automations`,
           },
           {
             title: "Integrations",
             label: "",
             icon: Puzzle,
             variant: "ghost",
-            href: "/integrations",
+            href: `/workspace/${workspaceId}/integrations`,
           },
           {
             title: "Metrics",
             label: "",
             icon: BarChart3,
             variant: "ghost",
-            href: "/metrics",
+            href: `/workspace/${workspaceId}/metrics`,
           },
         ]}
       />
     </div>
   );
+}
+function useNavigation() {
+  throw new Error("Function not implemented.");
 }

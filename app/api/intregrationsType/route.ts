@@ -4,7 +4,7 @@ import db from "@/lib/db";
 export async function GET(request: Request) {
   const user = await currentUser();
 
-  console.log("USR: ", user);
+  // console.log("USR: ", user);
 
   // // SearchParams
   // const url = new URL(request.url);

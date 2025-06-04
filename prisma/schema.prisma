@@ -76,6 +76,19 @@ model TwoFactorToken {
   @@unique([email, token])
 }
 
+model Workspace {
+  id                String         @id @default(cuid())
+  name              String
+  description       String
+  icon              String
+  workspaceMembers  String
+  integrationsCount Int            @default(0)
+  botsCount         Int            @default(0)
+  catalogs          Catalog[]
+  runLogs           RunLog[] // Añadido: Relación con RunLog
+  intregrations     Intregration[] // Añadido: Relación con Intregration
+}
+
 model TwoFactorConfirmation {
   id String @id @default(cuid())
 
@@ -104,8 +117,11 @@ model Intregration {
   campaignPrefix     String
   user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   intregrationType   IntregrationType @relation(fields: [intregrationTypeId], references: [id], onDelete: Cascade)
+  workspaceId        String? // Añadido: Campo para la relación con Workspace
+  workspace          Workspace?       @relation(fields: [workspaceId], references: [id]) // Añadido: Relación inversa con Workspace
 
-  @@unique([userId, intregrationTypeId])
+  @@unique([workspaceId, userId, intregrationTypeId])
+  @@index([workspaceId]) // Añadido: Índice para mejorar el rendimiento
 }
 
 model Rule {
@@ -136,7 +152,11 @@ model Catalog {
   user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   rule          Rule    @relation(fields: [ruleId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, ruleId])
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@unique([workspaceId, userId, ruleId])
+  @@index([workspaceId])
 }
 
 enum RunStatus {
@@ -155,6 +175,10 @@ model RunLog {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   rule      Rule     @relation(fields: [ruleId], references: [id], onDelete: Cascade)
 
-  status RunStatus @default(NORUN)
-  errors String
+  status      RunStatus @default(NORUN)
+  errors      String
+  workspaceId String // Añadido: Campo para la relación con Workspace
+  workspace   Workspace @relation(fields: [workspaceId], references: [id]) // Añadido: Relación inversa con Workspace
+
+  @@index([workspaceId]) // Añadido: Índice para mejorar el rendimiento
 }

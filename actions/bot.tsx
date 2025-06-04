@@ -3,7 +3,8 @@
 import { currentUser } from "@/lib/auth";
 import { api } from "@/lib/globalApi";
 
-export const createBotAction = async (rule: string) => {
+export const createBotAction = async (workspace: string, rule: string) => {
+  console.log("createBotAction ", workspace, rule);
   const user = await currentUser();
 
   if (!user) {
@@ -11,8 +12,8 @@ export const createBotAction = async (rule: string) => {
   }
   const data = {
     user: user.id,
+    workspace,
     rule,
-    // "frequency": "0 9 * * 1,2,3,4"
   };
   const result = await api.post(`/bot`, data);
 
@@ -53,6 +54,18 @@ export const getBotAction = async () => {
   }
 
   const result = await api.get(`/bot?user=${user.id}`);
+  return result;
+};
+
+export const getBotByWorkspaceAction = async (workspace: string) => {
+  const user = await currentUser();
+  console.log("USR:", user);
+
+  if (!user) {
+    return { error: "Unauthorized" };
+  }
+
+  const result = await api.get(`/bot?workspace=${workspace}`);
   return result;
 };
 

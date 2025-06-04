@@ -3,7 +3,7 @@
 import { currentUser } from "@/lib/auth";
 import { api } from "@/lib/globalApi";
 
-export const getRunLogAction = async () => {
+export const getRunLogAction = async (workspace: string) => {
   const user = await currentUser();
   console.log("USR:", user);
 
@@ -11,7 +11,7 @@ export const getRunLogAction = async () => {
     return { error: "Unauthorized" };
   }
 
-  const result = await api.get(`/runlog?user=${user.id}`);
+  const result = await api.get(`/runlog?workspace=${workspace}`);
 
   console.log(result);
   return result;

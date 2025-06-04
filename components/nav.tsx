@@ -8,6 +8,7 @@ import { buttonVariants } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import { useWorkspace } from "@/app/(protected)/(workspace)/workspace/[id]/(automations)/workspaceProvider";
 
 interface NavProps {
   isCollapsed: boolean;
@@ -21,6 +22,8 @@ interface NavProps {
 }
 
 export function Nav({ links, isCollapsed }: NavProps) {
+  const workspaceId = useWorkspace().workspaceId;
+
   const pathNane = usePathname();
   return (
     <div data-collapsed={isCollapsed} className="group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2">
