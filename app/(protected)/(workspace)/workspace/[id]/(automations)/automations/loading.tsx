@@ -1,4 +1,4 @@
-import { TableSkeleton } from "../_components/TableSkeleton";
+import { TableSkeleton } from "../../../../../_components/TableSkeleton";
 
 function loading() {
   return <TableSkeleton></TableSkeleton>;

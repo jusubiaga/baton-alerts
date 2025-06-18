@@ -3,10 +3,21 @@ import AutomationsTable from "./_components/AutomationsTable";
 import AddBotsButton from "./_components/addbot-button";
 import { getRules } from "@/data/rules";
 import { Rule } from "@prisma/client";
-import { getBotAction } from "@/actions/bot";
+import { getBotByWorkspaceAction } from "@/actions/bot";
+import { useWorkspace } from "../workspaceProvider";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
-async function Automations() {
-  const bot = await getBotAction();
+interface AutomationsPageProps {
+  params: {
+    id: string; // Esto es para el parámetro dinámico [id] en la ruta
+  };
+  searchParams: {
+    [key: string]: string | string[] | undefined;
+  };
+}
+async function Automations({ params }: AutomationsPageProps) {
+  const bot = await getBotByWorkspaceAction(params.id);
   const rules: Rule[] = await getRules();
 
   return (

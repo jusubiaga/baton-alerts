@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation";
 import { createRun } from "@/data/runlog";
 import CronGenerator from "./CronGenerator";
 import { runBotAction, updateBotAction } from "@/actions/bot";
+import { useWorkspace } from "../../workspaceProvider";
 
 export function ButtonLoading() {
   return (
@@ -118,6 +119,7 @@ export function BotForm({ buttonLabel, className = "", data }: BotFormProps) {
   const [startTime, setStartTime] = useState<string>("00:00");
   const [cronExpression, setCronExpression] = useState<string>("* * * * *");
   const [inputCron, setInputCron] = useState<string>("");
+  const { workspaceId } = useWorkspace();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -217,7 +219,7 @@ export function BotForm({ buttonLabel, className = "", data }: BotFormProps) {
     // });
 
     await runBotAction(data.id);
-    router.push("/runlog");
+    router.push(`/workspace/${workspaceId}/runlog`);
     SetIsCreateRun(false);
   };
 
